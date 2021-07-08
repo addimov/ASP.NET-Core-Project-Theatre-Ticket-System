@@ -1,0 +1,15 @@
+﻿@using TheatreWebApp.Models.Plays
+
+@model PlayDetailsViewModel
+
+<div class="col-sm-12 offset-lg-2 col-lg-8">
+    <h1 class="text-center">@Model.Name</h1>
+
+    <p class="text-center">@Model.ShortDescription</p>
+
+    @foreach (var item in Model.Paragraphs)
+    {
+        <p class="text-center">@item</p>
+    }
+</div>
+

@@ -8,7 +8,7 @@ namespace TheatreWebApp.Data.Models
         public Stage()
         {
             this.Seats = new HashSet<Seat>();
-            this.Plays = new HashSet<Play>();
+            this.Shows = new HashSet<Show>();
         }
 
         [Key]
@@ -20,6 +20,6 @@ namespace TheatreWebApp.Data.Models
 
         public IEnumerable<Seat> Seats { get; set; }
 
-        public IEnumerable<Play> Plays { get; set; }
+        public IEnumerable<Show> Shows { get; set; }
     }
 }

@@ -1,0 +1,54 @@
+﻿@using TheatreWebApp.Models.Program
+
+@model AddShowFormModel
+
+@{
+    ViewData["Title"] = "Add Show";
+}
+
+
+
+<form method="post">
+    <div class="col-sm-12 offset-lg-2 col-lg-8">
+        <h2 class="text-center">Add show</h2>
+
+        <div class="form-group">
+            <label asp-for="PlayId">Play</label>
+            <select asp-for="PlayId" class="form-control">
+                @foreach (var play in Model.Plays)
+                {
+                    <option value="@play.Id">@play.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="StageId">Stage</label>
+            <select asp-for="StageId" class="form-control">
+                @foreach (var stage in Model.Stages)
+                {
+                    <option value="@stage.Id">@stage.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Date">Date</label>
+            <input asp-for="Date" class="form-control" placeholder="dd/MM/yyyy">
+            <span asp-validation-for="Date" class="small text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Time">Time</label>
+            <select asp-for="Time" class="form-control">
+                <option value="Time">19:00</option>
+                <option value="Time">20:00</option>
+                <option value="Time">21:00</option>
+            </select>
+        </div>
+
+
+
+        <input class="btn btn-primary" type="submit" value="Submit">
+    </div>
+</form>

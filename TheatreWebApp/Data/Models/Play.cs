@@ -13,5 +13,8 @@ namespace TheatreWebApp.Data.Models
         [Required]
         public string Description { get; set; }
 
+        [MaxLength(250)]
+        public string ShortDescription { get; set; }
+
     }
 }
