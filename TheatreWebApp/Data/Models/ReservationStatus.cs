@@ -1,9 +1,13 @@
-﻿namespace TheatreWebApp.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TheatreWebApp.Data.Models
 {
-    public enum ReservationStatus
+    public class ReservationStatus
     {
-        Reserved = 1,
-        Paid = 2,
-        Expired = 3
+        [Key]
+        public int Id { get; init; }
+
+        [Required]
+        public string Name { get; set; }
     }
 }

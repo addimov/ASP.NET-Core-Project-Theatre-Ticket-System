@@ -4,8 +4,13 @@ using TheatreWebApp.Data.Models;
 
 namespace TheatreWebApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class TheatreDbContext : IdentityDbContext<ApplicationUser>
     {
+        public TheatreDbContext(DbContextOptions<TheatreDbContext> options)
+            : base(options)
+        {
+        }
+
         public DbSet<Stage> Stages { get; set; }
 
         public DbSet<Seat> Seats { get; set; }
@@ -16,11 +21,8 @@ namespace TheatreWebApp.Data
 
         public DbSet<Show> Shows { get; set; }
 
+        public DbSet<ReservationStatus> ReservationStatuses { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

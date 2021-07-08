@@ -27,7 +27,8 @@ namespace TheatreWebApp.Data.Models
 
         public decimal TotalPrice { get; init; }
 
-        [Required]
+        public int ReservationStatusId { get; set; }
+
         public ReservationStatus ReservationStatus { get; set; }
 
     }
