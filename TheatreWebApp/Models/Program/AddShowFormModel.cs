@@ -14,6 +14,7 @@ namespace TheatreWebApp.Models.Program
         public int StageId { get; set; }
 
         [Required]
+        [RegularExpression(@"[0-9]{2}/[0-9]{2}/[0-9]{4}")]
         public string Date { get; set; }
 
         [Required]

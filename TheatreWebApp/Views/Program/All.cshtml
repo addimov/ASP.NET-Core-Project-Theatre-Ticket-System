@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TheatreWebApp.Data.Models.Show>
+﻿@model IEnumerable<TheatreWebApp.Models.Program.ShowViewModel>
 
 @{
     ViewData["Title"] = "All";
@@ -17,10 +17,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Play)
+                @Html.DisplayNameFor(model => model.PlayName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Stage)
+                @Html.DisplayNameFor(model => model.StageName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Time)
@@ -35,18 +35,16 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Play.Id)
+                        @Html.DisplayFor(modelItem => item.PlayName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Stage.Name)
+                        @Html.DisplayFor(modelItem => item.StageName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Time)
                     </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <td>                      
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>                        
                     </td>
                 </tr>
             }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TheatreWebApp.Data;
 
 namespace TheatreWebApp.Data.Migrations
 {
     [DbContext(typeof(TheatreDbContext))]
-    partial class TheatreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210710092558_PlaysFixed")]
+    partial class PlaysFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
