@@ -6,11 +6,7 @@ namespace TheatreWebApp.Data.Models
 {
     public class Reservation
     {
-        public Reservation()
-        {
-            this.Seats = new HashSet<Seat>();
-        }
-
+     
         [Key]
         [Required]
         public string Id { get; init; } = Guid.NewGuid().ToString();
@@ -23,7 +19,9 @@ namespace TheatreWebApp.Data.Models
 
         public Show Show { get; set; }
 
-        public IEnumerable<Seat> Seats { get; set; }
+        public int SeatId { get; set; }
+
+        public Seat Seat { get; set; }
 
         public decimal TotalPrice { get; init; }
 

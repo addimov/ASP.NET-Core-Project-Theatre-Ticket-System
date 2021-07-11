@@ -10,8 +10,8 @@ using TheatreWebApp.Data;
 namespace TheatreWebApp.Data.Migrations
 {
     [DbContext(typeof(TheatreDbContext))]
-    [Migration("20210708174457_ReservationStatusTable")]
-    partial class ReservationStatusTable
+    [Migration("20210711100233_TEST1")]
+    partial class TEST1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -236,12 +236,11 @@ namespace TheatreWebApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StageId")
-                        .HasColumnType("int");
+                    b.Property<string>("ShortDescription")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("StageId");
 
                     b.ToTable("Plays");
                 });
@@ -300,13 +299,13 @@ namespace TheatreWebApp.Data.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("ReservationId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Row")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatCategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("StageId")
@@ -316,9 +315,29 @@ namespace TheatreWebApp.Data.Migrations
 
                     b.HasIndex("ReservationId");
 
+                    b.HasIndex("SeatCategoryId");
+
                     b.HasIndex("StageId");
 
                     b.ToTable("Seats");
+                });
+
+            modelBuilder.Entity("TheatreWebApp.Data.Models.SeatCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SeatCategories");
                 });
 
             modelBuilder.Entity("TheatreWebApp.Data.Models.Show", b =>
@@ -352,6 +371,9 @@ namespace TheatreWebApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MaxSeats")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -413,13 +435,6 @@ namespace TheatreWebApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TheatreWebApp.Data.Models.Play", b =>
-                {
-                    b.HasOne("TheatreWebApp.Data.Models.Stage", null)
-                        .WithMany("Plays")
-                        .HasForeignKey("StageId");
-                });
-
             modelBuilder.Entity("TheatreWebApp.Data.Models.Reservation", b =>
                 {
                     b.HasOne("TheatreWebApp.Data.Models.ApplicationUser", "ApplicationUser")
@@ -433,7 +448,7 @@ namespace TheatreWebApp.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("TheatreWebApp.Data.Models.Show", "Show")
-                        .WithMany()
+                        .WithMany("Reservations")
                         .HasForeignKey("ShowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -451,11 +466,19 @@ namespace TheatreWebApp.Data.Migrations
                         .WithMany("Seats")
                         .HasForeignKey("ReservationId");
 
+                    b.HasOne("TheatreWebApp.Data.Models.SeatCategory", "SeatCategory")
+                        .WithMany("Seats")
+                        .HasForeignKey("SeatCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TheatreWebApp.Data.Models.Stage", "Stage")
                         .WithMany("Seats")
                         .HasForeignKey("StageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("SeatCategory");
 
                     b.Navigation("Stage");
                 });
@@ -469,7 +492,7 @@ namespace TheatreWebApp.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("TheatreWebApp.Data.Models.Stage", "Stage")
-                        .WithMany()
+                        .WithMany("Shows")
                         .HasForeignKey("StageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -489,11 +512,21 @@ namespace TheatreWebApp.Data.Migrations
                     b.Navigation("Seats");
                 });
 
+            modelBuilder.Entity("TheatreWebApp.Data.Models.SeatCategory", b =>
+                {
+                    b.Navigation("Seats");
+                });
+
+            modelBuilder.Entity("TheatreWebApp.Data.Models.Show", b =>
+                {
+                    b.Navigation("Reservations");
+                });
+
             modelBuilder.Entity("TheatreWebApp.Data.Models.Stage", b =>
                 {
-                    b.Navigation("Plays");
-
                     b.Navigation("Seats");
+
+                    b.Navigation("Shows");
                 });
 #pragma warning restore 612, 618
         }

@@ -26,3 +26,4 @@ namespace TheatreWebApp.Data.Models
 
         public IEnumerable<Reservation> Reservations { get; set; }
     }
+}

@@ -72,9 +72,21 @@ namespace TheatreWebApp.Controllers
 
         public IActionResult BookSeats(int id)
         {
-            var show = data.Shows.Find(id);
+            int takenSeats = data.Reservations.Where(r => r.ShowId == id).Count();
 
-            return View();
+            var show = data.Shows
+                .Where(s => s.Id == id)
+                .Select(s => new ShowBookingViewModel
+                {
+                    PlayName = s.Play.Name,
+                    StageName = s.Stage.Name,
+                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time),
+                    AvalaibleSeats = s.Stage.MaxSeats - takenSeats
+                })
+                .FirstOrDefault();
+
+
+            return View(show);
         }
 
         private static DateTime GetShowTime(string date, string hour)

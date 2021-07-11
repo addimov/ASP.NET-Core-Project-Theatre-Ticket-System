@@ -18,6 +18,8 @@ namespace TheatreWebApp.Data.Models
         [Required]
         public string Name { get; set; }
 
+        public int MaxSeats { get; set; }
+
         public IEnumerable<Seat> Seats { get; set; }
 
         public IEnumerable<Show> Shows { get; set; }

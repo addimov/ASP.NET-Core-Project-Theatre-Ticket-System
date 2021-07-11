@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TheatreWebApp.Data.Migrations
 {
-    public partial class ReservationStatusTable : Migration
+    public partial class TEST1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -47,6 +47,21 @@ namespace TheatreWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Plays",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShortDescription = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Plays", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ReservationStatuses",
                 columns: table => new
                 {
@@ -60,12 +75,27 @@ namespace TheatreWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SeatCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SeatCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Stages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaxSeats = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -179,27 +209,6 @@ namespace TheatreWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Plays",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StageId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Plays", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Plays_Stages_StageId",
-                        column: x => x.StageId,
-                        principalTable: "Stages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Shows",
                 columns: table => new
                 {
@@ -268,7 +277,7 @@ namespace TheatreWebApp.Data.Migrations
                     Number = table.Column<int>(type: "int", nullable: false),
                     Row = table.Column<int>(type: "int", nullable: false),
                     StageId = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    SeatCategoryId = table.Column<int>(type: "int", nullable: false),
                     ReservationId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -280,6 +289,12 @@ namespace TheatreWebApp.Data.Migrations
                         principalTable: "Reservations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Seats_SeatCategories_SeatCategoryId",
+                        column: x => x.SeatCategoryId,
+                        principalTable: "SeatCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Seats_Stages_StageId",
                         column: x => x.StageId,
@@ -328,11 +343,6 @@ namespace TheatreWebApp.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Plays_StageId",
-                table: "Plays",
-                column: "StageId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservations_ApplicationUserId",
                 table: "Reservations",
                 column: "ApplicationUserId");
@@ -351,6 +361,11 @@ namespace TheatreWebApp.Data.Migrations
                 name: "IX_Seats_ReservationId",
                 table: "Seats",
                 column: "ReservationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Seats_SeatCategoryId",
+                table: "Seats",
+                column: "SeatCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seats_StageId",
@@ -393,6 +408,9 @@ namespace TheatreWebApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Reservations");
+
+            migrationBuilder.DropTable(
+                name: "SeatCategories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

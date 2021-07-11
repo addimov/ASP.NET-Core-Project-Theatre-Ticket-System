@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TheatreWebApp.Data.Models
 {
     public class Seat
     {
+        public Seat()
+        {
+            this.Reservations = new HashSet<Reservation>();        
+        }
+
         [Key]
         [Required]
         public int Id { get; init; }
@@ -20,6 +26,7 @@ namespace TheatreWebApp.Data.Models
 
         public SeatCategory SeatCategory { get; set; }
 
-        public decimal Price { get; set; }
+        public IEnumerable<Reservation> Reservations { get; set; }
+
     }
 }

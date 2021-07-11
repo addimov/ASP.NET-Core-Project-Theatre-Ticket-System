@@ -1,0 +1,19 @@
+﻿@using TheatreWebApp.Models.Program
+
+@model ShowBookingViewModel
+
+@{
+    ViewData["Title"] = "Book Seats";
+}
+
+<div class="col-sm-12 offset-lg-2 col-lg-8">
+    <h1 class="text-center">@Model.PlayName</h1>
+
+    <p class="text-center">@Model.StageName</p>
+
+    <p class="text-center">@Model.Time</p>
+
+    <p class="text-center">@Model.AvalaibleSeats</p>
+
+
+</div>
