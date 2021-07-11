@@ -23,6 +23,8 @@ namespace TheatreWebApp.Data
 
         public DbSet<ReservationStatus> ReservationStatuses { get; set; }
 
+        public DbSet<SeatCategory> SeatCategories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

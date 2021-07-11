@@ -16,6 +16,10 @@ namespace TheatreWebApp.Data.Models
 
         public Stage Stage { get; set; }
 
+        public int SeatCategoryId { get; set; }
+
+        public SeatCategory SeatCategory { get; set; }
+
         public decimal Price { get; set; }
     }
 }

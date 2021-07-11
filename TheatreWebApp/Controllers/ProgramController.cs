@@ -70,6 +70,13 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("All");
         }
 
+        public IActionResult BookSeats(int id)
+        {
+            var show = data.Shows.Find(id);
+
+            return View();
+        }
+
         private static DateTime GetShowTime(string date, string hour)
         {
             var timeString = date + " " + hour;

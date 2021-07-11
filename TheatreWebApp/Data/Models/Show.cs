@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TheatreWebApp.Data.Models
 {
     public class Show
     {
+        public Show()
+        {
+            this.Reservations = new HashSet<Reservation>();
+        }
+
         [Key]
         public int Id { get; init; }
 
@@ -17,5 +23,6 @@ namespace TheatreWebApp.Data.Models
         public Stage Stage { get; set; }
 
         public DateTime Time { get; set; }
+
+        public IEnumerable<Reservation> Reservations { get; set; }
     }
-}
