@@ -219,6 +219,26 @@ namespace TheatreWebApp.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("TheatreWebApp.Data.Models.OnlineTicket", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ReservationStatusId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ReservationStatusId");
+
+                    b.ToTable("OnlineTickets");
+                });
+
             modelBuilder.Entity("TheatreWebApp.Data.Models.Play", b =>
                 {
                     b.Property<int>("Id")
@@ -251,22 +271,27 @@ namespace TheatreWebApp.Data.Migrations
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ReservationStatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShowId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("SeatId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ShowId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TicketId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("ReservationStatusId");
+                    b.HasIndex("SeatId");
 
                     b.HasIndex("ShowId");
+
+                    b.HasIndex("TicketId");
 
                     b.ToTable("Reservations");
                 });
@@ -297,9 +322,6 @@ namespace TheatreWebApp.Data.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
-                    b.Property<string>("ReservationId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("Row")
                         .HasColumnType("int");
 
@@ -310,8 +332,6 @@ namespace TheatreWebApp.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReservationId");
 
                     b.HasIndex("SeatCategoryId");
 
@@ -433,10 +453,10 @@ namespace TheatreWebApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TheatreWebApp.Data.Models.Reservation", b =>
+            modelBuilder.Entity("TheatreWebApp.Data.Models.OnlineTicket", b =>
                 {
                     b.HasOne("TheatreWebApp.Data.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("TheatreWebApp.Data.Models.ReservationStatus", "ReservationStatus")
@@ -445,25 +465,38 @@ namespace TheatreWebApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TheatreWebApp.Data.Models.Show", "Show")
-                        .WithMany("Reservations")
-                        .HasForeignKey("ShowId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("ReservationStatus");
+                });
+
+            modelBuilder.Entity("TheatreWebApp.Data.Models.Reservation", b =>
+                {
+                    b.HasOne("TheatreWebApp.Data.Models.ApplicationUser", null)
+                        .WithMany("Reservations")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("TheatreWebApp.Data.Models.Seat", "Seat")
+                        .WithMany("Reservations")
+                        .HasForeignKey("SeatId");
+
+                    b.HasOne("TheatreWebApp.Data.Models.Show", "Show")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ShowId");
+
+                    b.HasOne("TheatreWebApp.Data.Models.OnlineTicket", "Ticket")
+                        .WithMany("Reservations")
+                        .HasForeignKey("TicketId");
+
+                    b.Navigation("Seat");
 
                     b.Navigation("Show");
+
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("TheatreWebApp.Data.Models.Seat", b =>
                 {
-                    b.HasOne("TheatreWebApp.Data.Models.Reservation", null)
-                        .WithMany("Seats")
-                        .HasForeignKey("ReservationId");
-
                     b.HasOne("TheatreWebApp.Data.Models.SeatCategory", "SeatCategory")
                         .WithMany("Seats")
                         .HasForeignKey("SeatCategoryId")
@@ -505,9 +538,14 @@ namespace TheatreWebApp.Data.Migrations
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("TheatreWebApp.Data.Models.Reservation", b =>
+            modelBuilder.Entity("TheatreWebApp.Data.Models.OnlineTicket", b =>
                 {
-                    b.Navigation("Seats");
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("TheatreWebApp.Data.Models.Seat", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("TheatreWebApp.Data.Models.SeatCategory", b =>

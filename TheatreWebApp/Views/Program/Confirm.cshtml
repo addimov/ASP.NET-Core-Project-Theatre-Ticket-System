@@ -1,0 +1,30 @@
+﻿@using TheatreWebApp.Models.Program
+
+@model TicketViewModel
+
+@{
+    ViewData["Title"] = "Confirm reservation";
+}
+
+<div class="col-sm-12 offset-lg-2 col-lg-8">
+    <h1 class="text-center">@Model.PlayName</h1>
+
+    <p class="text-center">@Model.StageName</p>
+
+    <p class="text-center">@Model.Time</p>
+
+    <p class="text-center">
+        Seats chosen:
+
+        @Model.SeatNumbers
+    </p>
+
+    <p class="text-center">
+        Final price:
+
+        @Model.TotalPrice
+    </p>
+    <form method="post">
+        <input class="btn btn-primary" type="submit" asp-action="Confirm" value="Confirm">
+    </form>
+</div>

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TheatreWebApp.Data.Models;
 
 namespace TheatreWebApp.Models.Program
 {
-    public class ShowBookingViewModel
+    public class TicketViewModel
     {
-        public int Id { get; set; }
 
         public string PlayName { get; set; }
 
@@ -15,8 +15,10 @@ namespace TheatreWebApp.Models.Program
 
         public string Time { get; set; }
 
-        public int AvalaibleSeats { get; set; }
+        public string SeatNumbers { get; set; }
 
+        public decimal TotalPrice { get; set; }
+
+        public IEnumerable<Reservation> Reservations { get; set; }
     }
 }
-

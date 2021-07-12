@@ -16,11 +16,13 @@ namespace TheatreWebApp.Infrastructure
 
             var data = scopedServices.ServiceProvider.GetService<TheatreDbContext>();
 
-            data.Database.Migrate();
+            data.Database.EnsureCreated();
 
             SeedStages(data);
 
             SeedSeats(data);
+
+            SeedReservationStatuses(data);
 
             return app;
         }
@@ -84,6 +86,24 @@ namespace TheatreWebApp.Infrastructure
 
             data.SaveChanges();
 
+        }
+
+        private static void SeedReservationStatuses(TheatreDbContext data)
+        {
+            if (data.ReservationStatuses.Any())
+            {
+                return;
+            }
+
+            data.ReservationStatuses.AddRange(new[]
+            {
+                new ReservationStatus{ Name = "Booked" },
+                new ReservationStatus { Name = "Paid" },
+                new ReservationStatus { Name = "Expired" },
+                new ReservationStatus { Name = "Unconfirmed" },
+            });
+
+            data.SaveChanges();
         }
     }
 }
