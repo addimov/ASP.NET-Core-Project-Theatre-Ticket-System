@@ -20,9 +20,7 @@ namespace TheatreWebApp.Controllers
 
         public IActionResult All()
         {
-            var showsQuery = data.Shows.AsQueryable();
-
-            var shows = showsQuery
+            var shows = data.Shows
                 .OrderByDescending(s => s.Time)
                 .Select(s => new ShowViewModel
                 {
@@ -71,11 +69,9 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("All");
         }
 
-        
-        public IActionResult BookSeats(int id)
+        public IActionResult BookSeats(int showId)
         {
-            var show = PrepareShowBookingForm(data, id);
-
+            var show = PrepareShowBookingForm(data, showId);
 
             return View(show);
         }
@@ -83,81 +79,92 @@ namespace TheatreWebApp.Controllers
         [HttpPost]
         public IActionResult BookSeats(ShowBookingFormModel show)
         {
-            var ticket = new OnlineTicket { ReservationStatusId = 4 };
+          
+            var ticket = new Ticket
+            {
+                ShowId = show.ShowId,
+                ReservationStatus = data.ReservationStatuses.Find(4),
+            };
 
             var reservations = new List<Reservation>();
 
-            foreach (var seat in show.SeatSelection)
+            foreach (var seatId in show.SeatSelection)
             {
-                reservations.Add(new Reservation { SeatId = seat, ShowId = show.Id, });
+                reservations.Add(new Reservation
+                {
+                    SeatId = seatId,
+                    Price = data.Seats.Select(s => s.SeatCategory).Select(c => c.Price).FirstOrDefault()
+                });
             }
 
             ticket.Reservations = reservations;
 
-            data.OnlineTickets.Add(ticket);
+            data.Tickets.Add(ticket);
             data.SaveChanges();
 
-            var showQuery = PrepareShowBookingForm(data, show.Id);
+            show.Ticket = ticket;
+
+            var showQuery = PrepareShowBookingForm(data, show.ShowId);
 
             show.PlayName = showQuery.PlayName;
             show.StageName = showQuery.StageName;
             show.Time = showQuery.Time;
             show.TakenSeats = showQuery.TakenSeats;
             show.AvailableSeats = showQuery.AvailableSeats;
+            show.Ticket = ticket;
             show.TicketId = ticket.Id;
 
             return View(show);
         }
 
-        public IActionResult Confirm(string id)
+        public IActionResult Review(string ticketId)
         {
-            var ticket = data.Reservations
-                .Where(r => r.TicketId == id)
+            var ticket = data.Tickets
+                .Where(t => t.Id == ticketId)
                 .Select(t => new TicketViewModel
                 {
-                    PlayName = t.Show.Play.Name.ToString(),
-                    StageName = t.Show.Stage.Name.ToString(),
-                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time)
+                    ShowId = t.Show.Id,
+                    TicketId = t.Id,
+                    PlayName = t.Show.Play.Name,
+                    StageName = t.Show.Stage.Name,
+                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time),
+                    SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
+                    TotalPrice = t.Reservations.Select(r => r.Price).Sum().GetValueOrDefault()
                 })
                 .FirstOrDefault();
-
-            var reservations = data.Reservations
-                .Where(r => r.TicketId == id)
-                .Select(r => r)
-                .ToList();
-
-            var prices = data.Reservations
-                .Where(r => r.TicketId == id)
-                .Select(r => r.Seat.SeatCategory.Price)
-                .ToList();
-
-            var seatNumbers = data.Reservations
-                .Where(r => r.TicketId == id)
-                .Select(r => r.Seat.Number)
-                .ToList();
-
-            ticket.Reservations = reservations;
-            ticket.SeatNumbers = string.Join(", ", seatNumbers);
-
-            var total = 0.0m;
-
-            foreach (var price in prices)
-            {
-                total += price;
-            }
-
-            ticket.TotalPrice = total;
 
             return View(ticket);
         }
 
-        [HttpPost]
-        public IActionResult Confirm()
+
+        public IActionResult Confirm(string ticketId)
         {
-            
+            var ticket = data.Tickets.Find(ticketId);
+
+            ticket.ReservationStatusId = 2;
+
+            data.Tickets.Update(ticket);
+            data.SaveChanges();
+
             return RedirectToAction("All");
         }
 
+        public IActionResult Discard(string ticketId)
+        {
+            var showId = data.Tickets
+                .Where(t => t.Id == ticketId)
+                .Select(s => s.ShowId)
+                .FirstOrDefault();
+
+            var ticket = data.Tickets.Find(ticketId);
+            var reservations = data.Reservations.Where(r => r.TicketId == ticketId).Select(r => r).ToList();
+
+            data.Reservations.RemoveRange(reservations);
+            data.Tickets.Remove(ticket);
+            data.SaveChanges();
+
+            return RedirectToAction("BookSeats", new { showId });
+        }
 
         private static DateTime GetShowTime(string date, string hour)
         {
@@ -173,12 +180,27 @@ namespace TheatreWebApp.Controllers
             return showTime;
         }
 
-        private static IEnumerable<Seat> GetAvailableSeats(TheatreDbContext data, int ShowId, IEnumerable<int> takenSeats)
-        {
-            var allSeatsQuery = data.Shows.AsQueryable();
+        
 
-            var allSeats = allSeatsQuery
-                .Where(sh => sh.Id == ShowId)
+        private static IEnumerable<Seat> GetTakenSeats(TheatreDbContext data, int showId)
+        {
+            var showTakenSeats = data.Reservations
+                .Where(r => r.Ticket.ShowId == showId)
+                .Select(r => r.Seat)
+                .ToList();
+
+            if (showTakenSeats != null)
+            {
+                return showTakenSeats;
+            }
+            
+            return null;
+        }
+
+        private static IEnumerable<Seat> GetAvailableSeats(TheatreDbContext data, int showId, IEnumerable<Seat> takenSeats)
+        {           
+            var allSeats = data.Shows
+                .Where(sh => sh.Id == showId)
                 .Select(sh => sh.Stage.Seats.ToList())
                 .FirstOrDefault();
 
@@ -197,50 +219,29 @@ namespace TheatreWebApp.Controllers
 
             foreach (var seat in allSeats)
             {
-                if (!takenSeats.Contains(seat.Number))
+                if (!takenSeats.Contains(seat))
                 {
                     availableSeats.Add(seat);
                 }
             }
 
-         
             return availableSeats;
-        }
-
-        private static IEnumerable<int> GetTakenSeats(TheatreDbContext data, int ShowId)
-        {
-            if (data.Reservations.Any())
-            {
-                var takenSeats = data.Reservations.Where(r => r.ShowId == ShowId).Select(r => r.Seat.Number).ToList();
-
-                return takenSeats;
-            }
-
-            
-
-            return null;
         }
 
         private static ShowBookingFormModel PrepareShowBookingForm(TheatreDbContext data, int showId)
         {
-            var takenSeats = GetTakenSeats(data, showId);
+            var takenSeats = GetTakenSeats(data, showId).ToList();
             var availableSeats = GetAvailableSeats(data, showId, takenSeats).OrderBy(x => x.Number).ToList();
-
-            var takenSeatsString = "-";
-
-            if (takenSeats != null)
-            {
-                takenSeatsString = string.Join(", ", takenSeats);
-            }
 
             var show = data.Shows
                 .Where(s => s.Id == showId)
                 .Select(s => new ShowBookingFormModel
                 {
+                    ShowId = showId,
                     PlayName = s.Play.Name,
                     StageName = s.Stage.Name,
                     Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time),
-                    TakenSeats = takenSeatsString,
+                    TakenSeats = takenSeats,
                     AvailableSeats = availableSeats,
                 })
                 .FirstOrDefault();

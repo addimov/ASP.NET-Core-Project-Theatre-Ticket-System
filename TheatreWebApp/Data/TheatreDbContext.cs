@@ -25,7 +25,7 @@ namespace TheatreWebApp.Data
 
         public DbSet<SeatCategory> SeatCategories { get; set; }
 
-        public DbSet<OnlineTicket> OnlineTickets { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

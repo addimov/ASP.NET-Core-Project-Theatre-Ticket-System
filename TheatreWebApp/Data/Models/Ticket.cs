@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TheatreWebApp.Data.Models
 {
-    public class OnlineTicket
+    public class Ticket
     {
-        public OnlineTicket()
+        public Ticket()
         {
             this.Reservations = new List<Reservation>();
         }
@@ -19,6 +19,10 @@ namespace TheatreWebApp.Data.Models
         public string ApplicationUserId { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; }
+
+        public int? ShowId { get; set; }
+
+        public Show Show { get; set; }
 
         public IEnumerable<Reservation> Reservations { get; set; }
 

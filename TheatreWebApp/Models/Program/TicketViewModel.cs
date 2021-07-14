@@ -8,6 +8,9 @@ namespace TheatreWebApp.Models.Program
 {
     public class TicketViewModel
     {
+        public string TicketId { get; set; }
+
+        public int ShowId { get; set; }
 
         public string PlayName { get; set; }
 
@@ -15,7 +18,7 @@ namespace TheatreWebApp.Models.Program
 
         public string Time { get; set; }
 
-        public string SeatNumbers { get; set; }
+        public IEnumerable<int> SeatNumbers { get; set; }
 
         public decimal TotalPrice { get; set; }
 

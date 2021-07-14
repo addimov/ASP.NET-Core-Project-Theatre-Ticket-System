@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TheatreWebApp.Data.Migrations
 {
-    public partial class test2 : Migration
+    public partial class test : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -209,31 +209,6 @@ namespace TheatreWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OnlineTickets",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ReservationStatusId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OnlineTickets", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OnlineTickets_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OnlineTickets_ReservationStatuses_ReservationStatusId",
-                        column: x => x.ReservationStatusId,
-                        principalTable: "ReservationStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Seats",
                 columns: table => new
                 {
@@ -289,15 +264,47 @@ namespace TheatreWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tickets",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ShowId = table.Column<int>(type: "int", nullable: true),
+                    ReservationStatusId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tickets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Tickets_ReservationStatuses_ReservationStatusId",
+                        column: x => x.ReservationStatusId,
+                        principalTable: "ReservationStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_Shows_ShowId",
+                        column: x => x.ShowId,
+                        principalTable: "Shows",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reservations",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ShowId = table.Column<int>(type: "int", nullable: true),
                     SeatId = table.Column<int>(type: "int", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TicketId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ShowId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -306,12 +313,6 @@ namespace TheatreWebApp.Data.Migrations
                         name: "FK_Reservations_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Reservations_OnlineTickets_TicketId",
-                        column: x => x.TicketId,
-                        principalTable: "OnlineTickets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -324,6 +325,12 @@ namespace TheatreWebApp.Data.Migrations
                         name: "FK_Reservations_Shows_ShowId",
                         column: x => x.ShowId,
                         principalTable: "Shows",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -368,16 +375,6 @@ namespace TheatreWebApp.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OnlineTickets_ApplicationUserId",
-                table: "OnlineTickets",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OnlineTickets_ReservationStatusId",
-                table: "OnlineTickets",
-                column: "ReservationStatusId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservations_ApplicationUserId",
                 table: "Reservations",
                 column: "ApplicationUserId");
@@ -416,6 +413,21 @@ namespace TheatreWebApp.Data.Migrations
                 name: "IX_Shows_StageId",
                 table: "Shows",
                 column: "StageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_ApplicationUserId",
+                table: "Tickets",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_ReservationStatusId",
+                table: "Tickets",
+                column: "ReservationStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_ShowId",
+                table: "Tickets",
+                column: "ShowId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -442,13 +454,13 @@ namespace TheatreWebApp.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "OnlineTickets");
-
-            migrationBuilder.DropTable(
                 name: "Seats");
 
             migrationBuilder.DropTable(
-                name: "Shows");
+                name: "Tickets");
+
+            migrationBuilder.DropTable(
+                name: "SeatCategories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -457,7 +469,7 @@ namespace TheatreWebApp.Data.Migrations
                 name: "ReservationStatuses");
 
             migrationBuilder.DropTable(
-                name: "SeatCategories");
+                name: "Shows");
 
             migrationBuilder.DropTable(
                 name: "Plays");

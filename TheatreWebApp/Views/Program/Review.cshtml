@@ -16,7 +16,7 @@
     <p class="text-center">
         Seats chosen:
 
-        @Model.SeatNumbers
+        @(string.Join(", ", Model.SeatNumbers))
     </p>
 
     <p class="text-center">
@@ -24,7 +24,8 @@
 
         @Model.TotalPrice
     </p>
-    <form method="post">
-        <input class="btn btn-primary" type="submit" asp-action="Confirm" value="Confirm">
-    </form>
+</div>
+<div class="row">
+        <a class="btn btn-primary" asp-controller="Program" asp-route-ticketId="@Model.TicketId" asp-action="Discard">Discard</a>
+        <a class="btn btn-primary"asp-controller="Program" asp-route-ticketId="@Model.TicketId" asp-action="Confirm">Confirm</a>
 </div>

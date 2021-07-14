@@ -5,7 +5,7 @@ namespace TheatreWebApp.Models.Program
 {
     public class ShowBookingFormModel
     {
-        public int Id { get; set; }
+        public int ShowId { get; set; }
 
         public string PlayName { get; set; }
 
@@ -13,15 +13,15 @@ namespace TheatreWebApp.Models.Program
 
         public string Time { get; set; }
 
-        public int AvalaibleSeatsCount { get; set; }
-
-        public string TakenSeats { get; set; }
+        public IEnumerable<Seat> TakenSeats { get; set; }
 
         public IEnumerable<Seat> AvailableSeats { get; set; }
 
         public IEnumerable<int> SeatSelection { get; set; }
 
         public IEnumerable<Reservation> BookedSeats { get; set; }
+
+        public Ticket Ticket { get; set; }
 
         public string TicketId { get; set; }
     }

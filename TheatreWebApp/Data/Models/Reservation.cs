@@ -11,10 +11,6 @@ namespace TheatreWebApp.Data.Models
         [Required]
         public string Id { get; init; } = Guid.NewGuid().ToString();
 
-        public int? ShowId { get; set; }
-
-        public Show Show { get; set; }
-
         public int? SeatId { get; set; }
 
         public Seat Seat { get; set; }
@@ -23,7 +19,7 @@ namespace TheatreWebApp.Data.Models
 
         public string TicketId { get; set; }
 
-        public OnlineTicket Ticket { get; set; }
+        public Ticket Ticket { get; set; }
 
     }
 
