@@ -20,7 +20,15 @@ namespace TheatreWebApp.Controllers
         {
             var playsQuery = data.Plays.AsQueryable();
 
-            var plays = playsQuery.Select(p => p).ToList();
+            var plays = playsQuery
+                .Select(p => new AllPlaysViewModel 
+                {
+                    Name = p.Name,                 
+                    ShortDescription = p.ShortDescription,
+                    Id = p.Id
+                })
+                .ToList();
+
 
             return View(plays);
         }
@@ -52,12 +60,13 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("All");
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int playId)
         {
             var play = data.Plays
-                .Where(p => p.Id == id)
+                .Where(p => p.Id == playId)
                 .Select(p => new PlayDetailsViewModel
                 {
+                    Id = p.Id,
                     Name = p.Name,
                     ShortDescription = p.ShortDescription,
                     Paragraphs = SplitIntoParagraphs(p.Description)
@@ -65,6 +74,41 @@ namespace TheatreWebApp.Controllers
                 .FirstOrDefault();
 
             return View(play);
+        }
+
+
+        public IActionResult Edit(int playId)
+        {
+            var play = data.Plays
+                .Where(p => p.Id == playId)
+                .Select(p => new AddPlayFormModel
+                {
+                    Name = p.Name,
+                    Description = p.Description,
+                    ShortDescription = p.ShortDescription,
+                    Id = playId
+                })
+                .FirstOrDefault();
+
+            return View(play);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(AddPlayFormModel play)
+        {
+            var playUpdated = data.Plays
+                .Where(p => p.Id == play.Id)
+                .Select(p => p)
+                .FirstOrDefault();
+
+            playUpdated.Name = play.Name;
+            playUpdated.ShortDescription = play.ShortDescription;
+            playUpdated.Description = playUpdated.Description;
+
+            data.Plays.Update(playUpdated);
+            data.SaveChanges();
+           
+            return RedirectToAction("Details", new { play.Id});
         }
 
         private static IEnumerable<string> SplitIntoParagraphs(string text)

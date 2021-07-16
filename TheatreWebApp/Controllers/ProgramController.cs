@@ -48,6 +48,17 @@ namespace TheatreWebApp.Controllers
         [HttpPost]
         public IActionResult Add(AddShowFormModel show)
         {
+            if(!data.Plays.Any(p => p.Id == show.PlayId))
+            {
+                this.ModelState.AddModelError(nameof(show.PlayId), "Play does not exist.");
+            }
+
+            if (!data.Stages.Any(s => s.Id == show.StageId))
+            {
+                this.ModelState.AddModelError(nameof(show.StageId), "Stage does not exist.");
+            }
+
+
             if (!ModelState.IsValid)
             {
                 show.Plays = data.Plays.Select(p => p).ToList();

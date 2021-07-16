@@ -4,6 +4,8 @@ namespace TheatreWebApp.Models.Plays
 {
     public class AddPlayFormModel
     {
+        public int Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 

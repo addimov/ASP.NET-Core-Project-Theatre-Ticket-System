@@ -5,6 +5,10 @@
 <div class="col-sm-12 offset-lg-2 col-lg-8">
     <h1 class="text-center">@Model.Name</h1>
 
+    <div class="d-flex justify-content-center" style="width: 20%; margin: auto; padding: 20px">
+        <a class="btn btn-primary" asp-controller="Plays" asp-action="Edit" asp-route-playId="@Model.Id">Edit</a>
+    </div>
+
     <p class="text-center">@Model.ShortDescription</p>
 
     @foreach (var item in Model.Paragraphs)
@@ -12,4 +16,6 @@
         <p class="text-center">@item</p>
     }
 </div>
+
+
 

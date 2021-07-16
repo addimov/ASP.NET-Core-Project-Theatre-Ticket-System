@@ -1,0 +1,35 @@
+﻿@using TheatreWebApp.Models.Plays
+
+@model AddPlayFormModel
+
+@{
+    ViewData["Title"] = "Edit Play";
+}
+
+
+
+<form method="post">
+    <div class="col-sm-12 offset-lg-2 col-lg-8">
+        <h2 class="text-center">Edit play</h2>
+
+        <div class="form-group">
+            <label asp-for="Name">Name</label>
+            <input asp-for="Name" class="form-control" value="@Model.Name">
+            <span asp-validation-for="Name" class="small text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ShortDescription">Basic information about the play</label>
+            <textarea asp-for="ShortDescription" class="form-control" rows="2" >@Model.ShortDescription</textarea>
+            <span asp-validation-for="ShortDescription" class="small text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="6">@Model.Description</textarea>
+            <span asp-validation-for="Description" class="small text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Id" value="@Model.Id">
+        <input class="btn btn-primary" type="submit" value="Submit">
+    </div>
+</form>

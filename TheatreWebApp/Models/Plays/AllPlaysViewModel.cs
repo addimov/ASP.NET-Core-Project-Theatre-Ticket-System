@@ -5,9 +5,13 @@ using System.Threading.Tasks;
 
 namespace TheatreWebApp.Models.Plays
 {
-    public class PlaysViewModel
+    public class AllPlaysViewModel
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
+
+        public string ShortDescription { get; set; }
 
     }
 }

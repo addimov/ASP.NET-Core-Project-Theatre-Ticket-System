@@ -16,6 +16,7 @@ namespace TheatreWebApp.Models.Program
         public string Date { get; set; }
 
         [Required]
+        [RegularExpression(@"[0-9]{2}:[0-9]{2}")]
         public string Time { get; set; }
 
         public IEnumerable<Play> Plays { get; set; }

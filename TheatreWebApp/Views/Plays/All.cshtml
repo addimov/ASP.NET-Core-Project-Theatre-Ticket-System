@@ -1,7 +1,9 @@
-﻿@model IEnumerable<TheatreWebApp.Data.Models.Play>
+﻿@using TheatreWebApp.Models.Plays
+
+@model IEnumerable<AllPlaysViewModel>
 
 @{
-    ViewData["Title"] = "All";
+    ViewData["Title"] = "All Plays";
 }
 
 <h1>Plays</h1>
@@ -37,7 +39,8 @@
                         @Html.DisplayFor(modelItem => item.ShortDescription)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
+                        <a class="btn btn-primary" asp-controller="Plays" asp-action="Edit" asp-route-playId="@item.Id">Edit</a>
+                        <a class="btn btn-primary" asp-controller="Plays" asp-action="Details" asp-route-playId="@item.Id">Details</a>
                     </td>
                 </tr>
             }
