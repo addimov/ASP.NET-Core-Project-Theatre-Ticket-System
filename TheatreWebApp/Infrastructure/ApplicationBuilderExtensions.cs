@@ -127,12 +127,12 @@ namespace TheatreWebApp.Infrastructure
                 if (rowCount % 2 == 0)
                 {
                     seat.Number = seatNumEven;
-                    seatNumEven++;
+                    seatNumEven += 2;
                 }
                 else
                 {
                     seat.Number = seatNumOdd;
-                    seatNumOdd++;
+                    seatNumOdd += 2;
                 }
 
                 if (rowCount < 4)

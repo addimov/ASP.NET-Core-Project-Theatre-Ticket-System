@@ -2,6 +2,11 @@
 
 @model PlayDetailsViewModel
 
+@{
+    ViewData["Title"] = $"{Model.Name}";
+}
+
+
 <div class="col-sm-12 offset-lg-2 col-lg-8">
     <h1 class="text-center">@Model.Name</h1>
 
