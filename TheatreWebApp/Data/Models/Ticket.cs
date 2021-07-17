@@ -24,11 +24,13 @@ namespace TheatreWebApp.Data.Models
 
         public Show Show { get; set; }
 
-        public IEnumerable<Reservation> Reservations { get; set; }
+        public DateTime CreatedOn { get; init; } = DateTime.UtcNow;
 
         public int ReservationStatusId { get; set; }
 
         public ReservationStatus ReservationStatus { get; set; }
+
+        public IEnumerable<Reservation> Reservations { get; set; }
 
     }
 }

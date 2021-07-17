@@ -18,7 +18,7 @@ namespace TheatreWebApp.Data.Models
 
         public int Row { get; set; }
 
-        public int StageId { get; set; }
+        public int? StageId { get; set; }
 
         public Stage Stage { get; set; }
 
