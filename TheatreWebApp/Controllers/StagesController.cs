@@ -51,18 +51,30 @@ namespace TheatreWebApp.Controllers
             {
                 var selectedSeat = data.Seats.Where(s => s.Id == stageConfig.SelectedSeatId).Select(s => s.Id).FirstOrDefault();
 
+                var selectedSeatsList = new List<int>();
 
                 if (stageConfig.SelectedSeats == null)
                 {
                     stageConfig.SelectedSeats = string.Join(" ", selectedSeat);
+                    selectedSeatsList = stageConfig.SelectedSeats.Split().Select(int.Parse).ToList();
                 }
                 else
                 {
-                    stageConfig.SelectedSeats = stageConfig.SelectedSeats + " " + selectedSeat.ToString();
+                    selectedSeatsList = stageConfig.SelectedSeats.Split().Select(int.Parse).ToList();
+
+                    if (selectedSeatsList.Contains(selectedSeat))
+                    {
+                        selectedSeatsList.Remove(selectedSeat);
+                        stageConfig.SelectedSeats = string.Join(" ", selectedSeatsList);
+                    }
+                    else
+                    {
+                        selectedSeatsList.Add(selectedSeat);
+                        stageConfig.SelectedSeats = stageConfig.SelectedSeats + " " + selectedSeat.ToString();
+                    }              
                 }
 
-                var selectedSeatsList = stageConfig.SelectedSeats.Split().Select(int.Parse).ToList();
-
+                
                 stageConfig.Seats = seatsQuery
                 .Select(s => new SeatViewModel
                 {
@@ -74,6 +86,8 @@ namespace TheatreWebApp.Controllers
                 .OrderBy(s => s.Row)
                 .ThenBy(s => s.Number)
                 .ToList();
+
+                stageConfig.SelectedSeatId = 0;
             }
 
            
