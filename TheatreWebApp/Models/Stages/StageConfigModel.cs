@@ -15,5 +15,7 @@ namespace TheatreWebApp.Models.Stages
 
         public string SelectedSeats { get; set; }
 
+        public int CurrentPage { get; init; } = 1;
+
     }
 }
