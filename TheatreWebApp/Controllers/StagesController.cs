@@ -16,11 +16,40 @@ namespace TheatreWebApp.Controllers
             this.data = data;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int id, int currentPage)
         {
             var stages = data.Stages.Select(s => s).ToList();
 
-            var stagesConfig = new StageConfigModel { Stages = stages };
+            var stagesConfig = new StageConfigModel { Stages = stages, Id = id, CurrentPage = currentPage };
+
+            var seatsQuery = data.Seats
+               .Where(s => s.StageId == stagesConfig.Id)
+               .Select(s => s)
+               .OrderBy(s => s.Row)
+               .ThenBy(s => s.Number)
+               .AsQueryable();
+
+            if (stagesConfig.CurrentPage == 1)
+            {
+                seatsQuery = seatsQuery.Take(300);
+            }
+            else if (stagesConfig.CurrentPage == 2)
+            {
+                seatsQuery = seatsQuery.Skip(300).Take(150);
+            }
+            else if (stagesConfig.CurrentPage == 3)
+            {
+                seatsQuery = seatsQuery.Skip(450).Take(100);
+            }
+
+            stagesConfig.Seats = seatsQuery
+                .Select(s => new SeatViewModel
+                {
+                    Id = s.Id,
+                    Number = s.Number,
+                    Row = s.Row
+                })
+                .ToList();
 
             return View(stagesConfig);
         }
