@@ -1,0 +1,37 @@
+﻿@using TheatreWebApp.Models.Stages
+
+@model IEnumerable<StageListViewModel>
+
+@{
+    ViewData["Title"] = "Stage Configuration";
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Seat Count</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var stage in Model)
+            {
+                <tr>
+                    <td>
+                        @stage.Name
+                    </td>
+                    <td>
+                        @stage.SeatCount
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Stages"  asp-action="Details" asp-route-stageId="@stage.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

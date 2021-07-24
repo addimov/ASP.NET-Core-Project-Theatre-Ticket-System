@@ -1,0 +1,74 @@
+﻿@using TheatreWebApp.Models.Stages
+
+@model StageQueryModel
+
+@{
+    ViewData["Title"] = "Stage Configuration";
+}
+
+@{
+    var rowCount = 1;
+
+}
+
+@if (Model.Id != 0)
+
+{
+
+
+
+
+    <form method="post">
+        <div>
+            @if (Model.Id == 1)
+            {
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" type="submit" name="currentPage" @(Model.CurrentPage == 1 ? "disabled" : string.Empty) value="1">Stalls</button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" type="submit" name="currentPage" @(Model.CurrentPage == 2 ? "disabled" : string.Empty) value="2">Gallery One</button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <button class="btn btn-primary" type="submit" name="currentPage" @(Model.CurrentPage == 3 ? "disabled" : string.Empty) value="3">Gallery Three</button>
+                    </div>
+                </div>
+            }
+
+
+
+
+            <input type="hidden" asp-for="Id" value="@Model.Id">
+            <input type="hidden" asp-for="Name" value="@Model.Name">
+            <input type="hidden" asp-for="CurrentPage" value="@Model.CurrentPage">
+            @if (Model.SelectedSeats != null)
+            {
+                <input type="hidden" asp-for="SelectedSeats" value="@Model.SelectedSeats">
+            }
+
+            @foreach (var seat in Model.Seats)
+            {
+                @if (seat.Row != rowCount)
+                {
+                    rowCount++;
+
+                    <br>
+                }
+
+
+                @if (seat.IsSelected)
+                {
+                    <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@seat.Id">@seat.Number</button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@seat.Id">@seat.Number</button>
+                }
+
+            }
+        </div>
+    </form>
+
+}

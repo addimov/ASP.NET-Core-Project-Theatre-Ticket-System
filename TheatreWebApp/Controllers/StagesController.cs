@@ -16,123 +16,132 @@ namespace TheatreWebApp.Controllers
             this.data = data;
         }
 
-        public IActionResult Index(int id, int currentPage)
+        public IActionResult All()
         {
-            var stages = data.Stages.Select(s => s).ToList();
-
-            var stagesConfig = new StageConfigModel { Stages = stages, Id = id, CurrentPage = currentPage };
-
-            var seatsQuery = data.Seats
-               .Where(s => s.StageId == stagesConfig.Id)
-               .Select(s => s)
-               .OrderBy(s => s.Row)
-               .ThenBy(s => s.Number)
-               .AsQueryable();
-
-            if (stagesConfig.CurrentPage == 1)
-            {
-                seatsQuery = seatsQuery.Take(300);
-            }
-            else if (stagesConfig.CurrentPage == 2)
-            {
-                seatsQuery = seatsQuery.Skip(300).Take(150);
-            }
-            else if (stagesConfig.CurrentPage == 3)
-            {
-                seatsQuery = seatsQuery.Skip(450).Take(100);
-            }
-
-            stagesConfig.Seats = seatsQuery
-                .Select(s => new SeatViewModel
+            var stages = data.Stages
+                .Select(s => new StageListViewModel
                 {
                     Id = s.Id,
-                    Number = s.Number,
-                    Row = s.Row
+                    Name = s.Name,
+                    SeatCount = s.Seats.Count()
                 })
                 .ToList();
 
-            return View(stagesConfig);
+            return View(stages);
         }
 
-        [HttpPost]
-        public IActionResult Index(StageConfigModel stageConfig)
+        public IActionResult Details(int stageId)
         {
-            var stages = data.Stages.Select(s => s).ToList();
+            var stageQuery = data.Stages
+                .Where(s => s.Id == stageId)
+                .Select(s => new StageQueryModel
+                {
+                    Id = stageId,
+                    Name = s.Name,
+                })
+                .FirstOrDefault();
 
-            stageConfig.Stages = stages;
-            
             var seatsQuery = data.Seats
-                .Where(s => s.StageId == stageConfig.Id)
+                .Where(s => s.StageId == stageId)
                 .Select(s => s)
                 .OrderBy(s => s.Row)
                 .ThenBy(s => s.Number)
                 .AsQueryable();
-            
-            if (stageConfig.CurrentPage == 1)
+
+            if (stageId == 2)
+            {
+                stageQuery.CurrentPage = 1;
+            }
+
+            if (stageQuery.CurrentPage == 1)
             {
                 seatsQuery = seatsQuery.Take(300);
-            } 
-            else if(stageConfig.CurrentPage == 2)
+            }
+            else if (stageQuery.CurrentPage == 2)
             {
                 seatsQuery = seatsQuery.Skip(300).Take(150);
-            } 
-            else if(stageConfig.CurrentPage == 3)
+            }
+            else if (stageQuery.CurrentPage == 3)
             {
                 seatsQuery = seatsQuery.Skip(450).Take(100);
             }
 
-      
-
-            if (stageConfig.SelectedSeatId == 0)
-            {
-                stageConfig.Seats = seatsQuery
+            stageQuery.Seats = seatsQuery
                 .Select(s => new SeatViewModel
-                {
+                { 
                     Id = s.Id,
                     Number = s.Number,
                     Row = s.Row
-                })
+                 })
                 .ToList();
-            }
 
-            if (stageConfig.SelectedSeatId != 0)
-            {
-                stageConfig = SeatSelector(stageConfig, seatsQuery);
-            }
-
-           
-            return View(stageConfig);
+            return View(stageQuery);
         }
 
-        private StageConfigModel SeatSelector(StageConfigModel stageConfig, IQueryable<Seat> seatsQuery)
+        [HttpPost]
+        public IActionResult Details(StageQueryModel stageQuery)
         {
-            var selectedSeat = data.Seats.Where(s => s.Id == stageConfig.SelectedSeatId).Select(s => s.Id).FirstOrDefault();
+            var seatsQuery = data.Seats
+                .Where(s => s.StageId == stageQuery.Id)
+                .Select(s => s)
+                .OrderBy(s => s.Row)
+                .ThenBy(s => s.Number)
+                .AsQueryable();
+
+            if (stageQuery.Id == 2)
+            {
+                stageQuery.CurrentPage = 1;
+            }
+
+            if (stageQuery.CurrentPage == 1)
+            {
+                seatsQuery = seatsQuery.Take(300);
+            }
+            else if (stageQuery.CurrentPage == 2)
+            {
+                seatsQuery = seatsQuery.Skip(300).Take(150);
+            }
+            else if (stageQuery.CurrentPage == 3)
+            {
+                seatsQuery = seatsQuery.Skip(450).Take(100);
+            }
+
+            stageQuery = SeatSelector(stageQuery, seatsQuery);
+
+            return View(stageQuery);
+        }
+
+        private StageQueryModel SeatSelector(StageQueryModel stageQuery, IQueryable<Seat> seatsQuery)
+        {
+            var selectedSeat = data.Seats
+                .Where(s => s.Id == stageQuery.SelectedSeatId)
+                .Select(s => s.Id)
+                .FirstOrDefault();
 
             var selectedSeatsList = new List<int>();
 
-            if (stageConfig.SelectedSeats == null)
+            if (stageQuery.SelectedSeats == null)
             {
-                stageConfig.SelectedSeats = string.Join(" ", selectedSeat);
-                selectedSeatsList = stageConfig.SelectedSeats.Split().Select(int.Parse).ToList();
+                selectedSeatsList.Add(selectedSeat);
+      
             }
             else
-            {
-                selectedSeatsList = stageConfig.SelectedSeats.Split().Select(int.Parse).ToList();
+            {            
+                selectedSeatsList = stageQuery.SelectedSeats.Split().Select(int.Parse).ToList();
 
                 if (selectedSeatsList.Contains(selectedSeat))
                 {
                     selectedSeatsList.Remove(selectedSeat);
-                    stageConfig.SelectedSeats = string.Join(" ", selectedSeatsList);
                 }
                 else
                 {
                     selectedSeatsList.Add(selectedSeat);
-                    stageConfig.SelectedSeats = stageConfig.SelectedSeats + " " + selectedSeat.ToString();
-                }
+                }              
             }
 
+            stageQuery.SelectedSeats = string.Join(" ", selectedSeatsList);
 
-            stageConfig.Seats = seatsQuery
+            stageQuery.Seats = seatsQuery
             .Select(s => new SeatViewModel
             {
                 Id = s.Id,
@@ -142,9 +151,9 @@ namespace TheatreWebApp.Controllers
             })
             .ToList();
 
-            stageConfig.SelectedSeatId = 0;
+            stageQuery.SelectedSeatId = 0;
 
-            return stageConfig;
+            return stageQuery;
         }
     }
 }
