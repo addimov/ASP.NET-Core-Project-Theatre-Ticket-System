@@ -111,6 +111,52 @@ namespace TheatreWebApp.Controllers
             return View(stageQuery);
         }
 
+        public IActionResult Edit(string selectedSeats)
+        {
+            var selectedSeatsIds = selectedSeats.Split().Select(int.Parse).ToList();
+
+            var seats = data.Seats
+                .Where(s => selectedSeatsIds.Contains(s.Id))
+                .Select(s => s)
+                .ToList();
+
+            var categoriesIds = data.Seats
+                .Where(s => selectedSeatsIds.Contains(s.Id))
+                .Select(s => s.SeatCategoryId)
+                .Distinct()
+                .ToList();
+
+            var stage = data.Seats.Where(s => selectedSeatsIds.Contains(s.Id)).Select(s => s.Stage.Name).FirstOrDefault();
+
+            var categories = new List<SeatCategoryViewModel>();
+
+            foreach (var category in categoriesIds)
+            {
+                var seatsInCategory = seats
+                    .Where(s => s.SeatCategoryId == category)
+                    .Select(s => s.Number)
+                    .ToList();
+
+                var seatsString = string.Join(", ", seatsInCategory);
+
+                var categoryModel = data.SeatCategories
+                    .Where(c => c.Id == category)
+                    .Select(c => new SeatCategoryViewModel
+                    {
+                        CategoryName = c.Name,
+                        Price = c.Price,
+                        Seats = seatsString,
+                        SeatsCount = seatsInCategory.Count(),
+                        StageName = stage
+                    })
+                    .FirstOrDefault();
+
+                categories.Add(categoryModel);
+            }
+
+            return View(categories);
+        }
+
         private StageQueryModel SeatSelector(StageQueryModel stageQuery, IQueryable<Seat> seatsQuery)
         {
             var selectedSeat = data.Seats

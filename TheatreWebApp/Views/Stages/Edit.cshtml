@@ -1,0 +1,43 @@
+﻿@using TheatreWebApp.Models.Stages
+
+@model IEnumerable<SeatCategoryViewModel>
+
+@{
+    ViewData["Title"] = "Edit Seats";
+}
+
+<h2 class="text-center">Edit seats</h2>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Number of seats</th>
+            <th>Category</th>
+            <th>Selected seats</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var category in Model)
+            {
+        <tr>
+            <td>
+                @category.SeatsCount
+            </td>
+            <td>
+                @category.CategoryName 
+            </td>
+            <td>
+                @category.Seats
+            </td>
+            <td>
+                @category.Price
+            </td>
+        </tr>
+            }
+        }
+    </tbody>
+</table>
