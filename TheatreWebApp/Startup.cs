@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Infrastructure;
+using TheatreWebApp.Services.Seats;
 
 namespace TheatreWebApp
 {
@@ -44,6 +45,8 @@ namespace TheatreWebApp
                 options.Password.RequiredLength = 4;
                 options.Password.RequiredUniqueChars = 1;
             });
+
+            services.AddTransient<ISelectionService, SelectionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

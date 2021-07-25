@@ -18,5 +18,6 @@ namespace TheatreWebApp.Models.Stages
         public int SeatsCount { get; set; }
 
         public decimal Price { get; set; }
+
     }
 }
