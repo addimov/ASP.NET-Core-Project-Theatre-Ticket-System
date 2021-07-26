@@ -9,5 +9,7 @@
         public int Row { get; set; }
 
         public bool IsSelected { get; set; } = false;
+
+        public bool IsTaken { get; set; } = false;
     }
 }

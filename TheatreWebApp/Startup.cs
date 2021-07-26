@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Infrastructure;
+using TheatreWebApp.Services.Categories;
 using TheatreWebApp.Services.Seats;
 
 namespace TheatreWebApp
@@ -47,6 +48,7 @@ namespace TheatreWebApp
             });
 
             services.AddTransient<ISelectionService, SelectionService>();
+            services.AddTransient<ICategoryService, CategoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

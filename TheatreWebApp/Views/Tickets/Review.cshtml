@@ -1,0 +1,35 @@
+﻿@using TheatreWebApp.Models.Tickets
+
+@model TicketViewModel
+
+@{
+    ViewData["Title"] = "Review order";
+}
+
+<div class="col-sm-12 offset-lg-2 col-lg-8">
+    <h1 class="text-center">@Model.PlayName</h1>
+
+    <p class="text-center">@Model.StageName</p>
+
+    <p class="text-center">@Model.Time</p>
+
+    <p class="text-center">
+        Seats chosen:
+
+        @(string.Join(", ", Model.SeatNumbers))
+    </p>
+
+    <p class="text-center">
+        Final price:
+
+        @Model.TotalPrice
+    </p>
+</div>
+<div class="row">
+    <form method="post">
+        <input type="hidden" asp-for="TicketId" value="@Model.TicketId">
+        <button class="btn btn-primary" type="submit" name="Action" value="1">Discard</button>
+        <button class="btn btn-primary" type="submit" name="Action" value="2">Confirm and pay later</button>
+        <button class="btn btn-primary" type="submit" name="Action" value="3">Pay now</button>
+    </form>
+</div>

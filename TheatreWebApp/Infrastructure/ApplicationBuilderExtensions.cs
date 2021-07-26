@@ -98,7 +98,7 @@ namespace TheatreWebApp.Infrastructure
 
             data.ReservationStatuses.AddRange(new[]
             {
-                new ReservationStatus{ Name = "Booked" },
+                new ReservationStatus{ Name = "Confirmed" },
                 new ReservationStatus { Name = "Paid" },
                 new ReservationStatus { Name = "Expired" },
                 new ReservationStatus { Name = "Unconfirmed" },

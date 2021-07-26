@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TheatreWebApp.Data.Models;
 
-namespace TheatreWebApp.Models.Program
+namespace TheatreWebApp.Models.Tickets
 {
     public class TicketViewModel
     {
