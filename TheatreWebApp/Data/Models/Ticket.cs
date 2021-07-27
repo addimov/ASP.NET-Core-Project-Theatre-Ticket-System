@@ -16,9 +16,9 @@ namespace TheatreWebApp.Data.Models
         [Key]
         public string Id { get; init; } = Guid.NewGuid().ToString();
 
-        public string ApplicationUserId { get; set; }
+        public string UserId { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; }
+        public User User { get; set; }
 
         public int? ShowId { get; set; }
 

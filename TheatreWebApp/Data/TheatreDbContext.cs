@@ -4,7 +4,7 @@ using TheatreWebApp.Data.Models;
 
 namespace TheatreWebApp.Data
 {
-    public class TheatreDbContext : IdentityDbContext<ApplicationUser>
+    public class TheatreDbContext : IdentityDbContext<User>
     {
         public TheatreDbContext(DbContextOptions<TheatreDbContext> options)
             : base(options)

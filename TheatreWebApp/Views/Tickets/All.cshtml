@@ -1,0 +1,32 @@
+﻿@using TheatreWebApp.Models.Tickets
+
+@model IEnumerable<TicketViewModel>
+
+@{
+    ViewData["Title"] = "My Reservations";
+}
+
+
+
+<div class="offset-md-2 col-md-8">
+    @foreach (var ticket in Model)
+    {
+
+        var seats = string.Join(", ", ticket.SeatNumbers);
+
+
+
+        <div class="card w-100">
+            <div class="card-body">
+                <h5 class="card-title">@ticket.PlayName</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@ticket.StageName</h6>
+                <p class="card-text">Time: @ticket.Time -- Seats: @seats -- Price: @ticket.TotalPrice</p>
+                <p>Reservations Status: @ticket.Status</p>
+                <p>Created on: @ticket.CreatedOn</p>
+                <a href="#" class="card-link">Confirm</a>
+                <a href="#" class="card-link">Cancel</a>
+                <a href="#" class="card-link">Pay now</a>
+            </div>
+        </div>
+    }
+</div>

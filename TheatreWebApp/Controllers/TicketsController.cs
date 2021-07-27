@@ -23,6 +23,26 @@ namespace TheatreWebApp.Controllers
             this.selection = selection;
         }
 
+        public IActionResult All()
+        {
+            var tickets = data.Tickets
+                .Select(t => new TicketViewModel
+                {
+                    ShowId = t.Show.Id,
+                    TicketId = t.Id,
+                    PlayName = t.Show.Play.Name,
+                    StageName = t.Show.Stage.Name,
+                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time),
+                    Status = t.ReservationStatus.Name,
+                    TotalPrice = t.Reservations.Select(r => r.Price).Sum().GetValueOrDefault(),
+                    SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
+                    CreatedOn = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.CreatedOn)
+                })
+                .ToList();
+
+            return View(tickets);
+        }
+
         public IActionResult SelectSeats(int showId)
         {
 

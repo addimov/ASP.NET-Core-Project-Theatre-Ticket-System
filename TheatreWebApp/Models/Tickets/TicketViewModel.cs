@@ -22,6 +22,8 @@ namespace TheatreWebApp.Models.Tickets
 
         public decimal TotalPrice { get; set; }
 
-        public IEnumerable<Reservation> Reservations { get; set; }
+        public string Status { get; set; }
+
+        public string CreatedOn { get; set; }
     }
 }
