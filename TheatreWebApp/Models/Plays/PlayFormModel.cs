@@ -2,7 +2,7 @@
 
 namespace TheatreWebApp.Models.Plays
 {
-    public class AddPlayFormModel
+    public class PlayFormModel
     {
         public int Id { get; set; }
 
@@ -14,5 +14,10 @@ namespace TheatreWebApp.Models.Plays
 
         [StringLength(250)]
         public string ShortDescription { get; set; }
+
+        public string Credits { get; set; }
+
+        [Url]
+        public string ImageUrl { get; set; }
     }
 }

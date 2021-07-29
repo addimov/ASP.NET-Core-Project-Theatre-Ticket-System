@@ -39,7 +39,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(AddPlayFormModel play)
+        public IActionResult Add(PlayFormModel play)
         {
             if (!ModelState.IsValid)
             {
@@ -50,8 +50,15 @@ namespace TheatreWebApp.Controllers
             {
                 Name = play.Name,
                 Description = play.Description,
-                ShortDescription = play.ShortDescription
+                ShortDescription = play.ShortDescription,
+                Credits = play.Credits,
+                ImageUrl = play.ImageUrl
             };
+
+            if(playToAdd.ImageUrl == null)
+            {
+                playToAdd.ImageUrl = "https://inventionland.com/wp-content/uploads/2018/04/theater-stage.jpg";
+            }
 
 
             data.Plays.Add(playToAdd);
@@ -81,11 +88,13 @@ namespace TheatreWebApp.Controllers
         {
             var play = data.Plays
                 .Where(p => p.Id == playId)
-                .Select(p => new AddPlayFormModel
+                .Select(p => new PlayFormModel
                 {
                     Name = p.Name,
                     Description = p.Description,
                     ShortDescription = p.ShortDescription,
+                    Credits = p.Credits,
+                    ImageUrl = p.ImageUrl,
                     Id = playId
                 })
                 .FirstOrDefault();
@@ -94,7 +103,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(AddPlayFormModel play)
+        public IActionResult Edit(PlayFormModel play)
         {
             var playUpdated = data.Plays
                 .Where(p => p.Id == play.Id)

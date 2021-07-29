@@ -17,7 +17,7 @@ namespace TheatreWebApp.Infrastructure
 
             var data = scopedServices.ServiceProvider.GetService<TheatreDbContext>();
 
-            data.Database.EnsureDeleted();
+            //data.Database.EnsureDeleted();
             data.Database.EnsureCreated();
 
 

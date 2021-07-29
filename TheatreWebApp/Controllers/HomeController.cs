@@ -1,31 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using TheatreWebApp.Data;
 using TheatreWebApp.Models;
+using TheatreWebApp.Models.Home;
 
 namespace TheatreWebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly TheatreDbContext data;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(TheatreDbContext data)
         {
-            _logger = logger;
+            this.data = data;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
+            var plays = data.Plays
+                .Select(p => new IndexPlayViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    ShortDescription = p.ShortDescription,
+                    ImageUrl = p.ImageUrl
+                })
+                .OrderByDescending(p => p.Id)
+                .Take(3)
+                .ToList();
 
-        public IActionResult Privacy()
-        {
-            return View();
+            return View(plays);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
