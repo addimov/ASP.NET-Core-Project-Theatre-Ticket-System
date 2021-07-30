@@ -6,20 +6,16 @@ using System.Threading.Tasks;
 
 namespace TheatreWebApp.Models.Program
 {
-    public class ShowViewModel
+    public class EditShowFormModel
     {
         public int Id { get; set; }
 
-        public string PlayName { get; set; }
+        [Required]
+        [RegularExpression(@"[0-9]{2}/[0-9]{2}/[0-9]{4}")]
+        public string Date { get; set; }
 
-        public int PlayId { get; set; }
-
-        public string StageName { get; set; }
-
-        public string Description { get; set; }
-
-        public string ImageUrl { get; set; }
-
+        [Required]
+        [RegularExpression(@"[0-9]{2}:[0-9]{2}")]
         public string Time { get; set; }
     }
 }
