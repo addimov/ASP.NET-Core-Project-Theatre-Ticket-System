@@ -28,7 +28,7 @@ namespace TheatreWebApp.Controllers
             }
             if(showForm.SearchTerm != null)
             {
-                showQuery = showQuery.Where(s => s.Play.Name.Contains(showForm.SearchTerm));
+                showQuery = showQuery.Where(s => s.Play.Name.Contains(showForm.SearchTerm) || s.Play.ShortDescription.Contains(showForm.SearchTerm));
             }
             if(showForm.AfterDate != null)
             {
@@ -51,7 +51,6 @@ namespace TheatreWebApp.Controllers
                     PlayName = s.Play.Name,
                     PlayId = s.Play.Id,
                     StageName = s.Stage.Name,
-                    Description = s.Play.ShortDescription,
                     ImageUrl = s.Play.ImageUrl,
                     Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time)
                 })

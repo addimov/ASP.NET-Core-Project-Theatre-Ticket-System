@@ -16,9 +16,14 @@ namespace TheatreWebApp.Controllers
             this.data = data;
         }
 
-        public IActionResult All()
+        public IActionResult All(string searchTerm)
         {
             var playsQuery = data.Plays.AsQueryable();
+
+            if(searchTerm != null)
+            {
+                playsQuery = playsQuery.Where(p => p.Name.Contains(searchTerm) || p.Description.Contains(searchTerm) || p.ShortDescription.Contains(searchTerm));
+            }
 
             var plays = playsQuery
                 .Select(p => new PlaysListViewModel 
