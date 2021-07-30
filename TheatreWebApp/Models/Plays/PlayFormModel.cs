@@ -12,6 +12,7 @@ namespace TheatreWebApp.Models.Plays
         [Required]
         public string Description { get; set; }
 
+        [Required]
         [StringLength(250)]
         public string ShortDescription { get; set; }
 

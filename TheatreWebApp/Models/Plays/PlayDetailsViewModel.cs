@@ -10,6 +10,12 @@ namespace TheatreWebApp.Models.Plays
 
         public string ShortDescription { get; set; }
 
+        public string Credits { get; set; }
+
+        public string ImageUrl { get; set; }
+
+        public bool IsHidden { get; set; }
+
         public IEnumerable<string> Paragraphs { get; set; }
     }
 }

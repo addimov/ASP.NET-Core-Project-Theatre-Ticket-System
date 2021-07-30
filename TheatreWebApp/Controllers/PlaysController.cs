@@ -21,10 +21,11 @@ namespace TheatreWebApp.Controllers
             var playsQuery = data.Plays.AsQueryable();
 
             var plays = playsQuery
-                .Select(p => new AllPlaysViewModel 
+                .Select(p => new PlaysListViewModel 
                 {
                     Name = p.Name,                 
                     ShortDescription = p.ShortDescription,
+                    ImageUrl = p.ImageUrl,
                     Id = p.Id
                 })
                 .ToList();
@@ -76,11 +77,36 @@ namespace TheatreWebApp.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     ShortDescription = p.ShortDescription,
+                    Credits = p.Credits,
+                    ImageUrl = p.ImageUrl,
+                    IsHidden = p.IsHidden,
                     Paragraphs = SplitIntoParagraphs(p.Description)
                 })
                 .FirstOrDefault();
 
             return View(play);
+        }
+
+        public IActionResult Hide(int playId)
+        {
+            var play = data.Plays
+                .Where(p => p.Id == playId)
+                .Select(p => p)
+                .FirstOrDefault();
+
+            if(play.IsHidden == false)
+            {
+                play.IsHidden = true;
+            }
+            else
+            {
+                play.IsHidden = false;
+            }
+
+            data.Plays.Update(play);
+            data.SaveChanges();
+
+            return RedirectToAction("Details", new { playId = playId});
         }
 
 
@@ -112,12 +138,14 @@ namespace TheatreWebApp.Controllers
 
             playUpdated.Name = play.Name;
             playUpdated.ShortDescription = play.ShortDescription;
-            playUpdated.Description = playUpdated.Description;
+            playUpdated.Description = play.Description;
+            playUpdated.Credits = play.Credits;
+            playUpdated.ImageUrl = play.ImageUrl;
 
             data.Plays.Update(playUpdated);
             data.SaveChanges();
            
-            return RedirectToAction("Details", new { play.Id});
+            return RedirectToAction("Details", new { playId = play.Id});
         }
 
         private static IEnumerable<string> SplitIntoParagraphs(string text)

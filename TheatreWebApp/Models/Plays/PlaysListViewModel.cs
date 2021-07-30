@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 
 namespace TheatreWebApp.Models.Plays
 {
-    public class AllPlaysViewModel
+    public class PlaysListViewModel
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
         public string ShortDescription { get; set; }
+
+        public string ImageUrl { get; set; }
 
     }
 }

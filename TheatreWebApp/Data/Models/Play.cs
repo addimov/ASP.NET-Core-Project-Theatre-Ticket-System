@@ -22,5 +22,7 @@ namespace TheatreWebApp.Data.Models
 
         public string ImageUrl { get; set; }
 
+        public bool IsHidden { get; set; } = false;
+
     }
 }
