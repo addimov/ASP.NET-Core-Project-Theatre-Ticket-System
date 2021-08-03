@@ -1,6 +1,11 @@
-﻿namespace TheatreWebApp.Models.Stages
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace TheatreWebApp.Services.Seats
 {
-    public class SeatViewModel
+    public class SeatServiceModel
     {
         public int Id { get; init; }
 

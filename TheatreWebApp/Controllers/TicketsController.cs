@@ -46,37 +46,14 @@ namespace TheatreWebApp.Controllers
         public IActionResult SelectSeats(int showId)
         {
 
-            var seatsQuery = selection.PrepareSeatsQuery(showId);
-
-            var bookingChart = data.Shows
-                .Where(s => s.Id == showId)
-                .Select(s => new BookingFormModel
-                {
-                    ShowId = showId,
-                    PlayName = s.Play.Name,
-                    StageName = s.Stage.Name,
-                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time),
-                })
-                .FirstOrDefault();
-
-            bookingChart.Seats = selection.PrepareBookingChart(null, showId, seatsQuery);
-
-            return View(bookingChart);
+            return View(selection.GetSeatingChart(showId));
         }
 
         [HttpPost]
         public IActionResult SelectSeats(BookingFormModel bookingChart)
         {
 
-            var seatsQuery = selection.PrepareSeatsQuery(bookingChart.ShowId, bookingChart.CurrentPage);
-
-            var selectedSeatsList = selection.GetSelectedSeats(bookingChart.SelectedSeats, bookingChart.SelectedSeatId);
-
-            bookingChart.SelectedSeats = string.Join(" ", selectedSeatsList);
-
-            bookingChart.Seats = selection.PrepareBookingChart(selectedSeatsList, bookingChart.ShowId, seatsQuery);
-
-            return View(bookingChart);
+            return View(selection.GetSeatingChart(bookingChart));
         }
 
 
@@ -142,11 +119,6 @@ namespace TheatreWebApp.Controllers
             }
             if(ticketForm.Action == 2)
             {
-                ticket.ReservationStatusId = data.ReservationStatuses.Where(r => r.Name == "Confirmed").Select(r => r.Id).FirstOrDefault();
-                data.Tickets.Update(ticket);
-            }
-            if(ticketForm.Action == 3)
-            {
                 ticket.ReservationStatusId = data.ReservationStatuses.Where(r => r.Name == "Paid").Select(r => r.Id).FirstOrDefault();
                 data.Tickets.Update(ticket);
             }
@@ -155,5 +127,6 @@ namespace TheatreWebApp.Controllers
 
             return RedirectToAction("All");
         }
+
     }
 }

@@ -17,7 +17,9 @@ namespace TheatreWebApp.Models.Tickets
 
         public string Time { get; set; }
 
-        public IEnumerable<SeatViewModel> Seats { get; set; }
+        public List<SeatServiceModel> Seats { get; set; }
+
+        public List<int> Rows { get; set; }
 
         public int SelectedSeatId { get; set; }
 

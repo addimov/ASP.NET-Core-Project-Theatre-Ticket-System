@@ -19,7 +19,7 @@
 
 @{
     var rowCount = 1;
-
+    var currentRow = 1;
 }
 
 
@@ -27,16 +27,16 @@
     <div>
         @if (Model.StageName == "Big stage")
         {
-            <div class="row mb-5">
-                <div class="col-md-6">
+            <div class="row justify-content-center mb-2">
+                <div style="padding: 5px">
                     <button class="btn btn-primary" type="submit" name="currentPage" @(Model.CurrentPage == 1 ? "disabled" : string.Empty) value="1">Stalls</button>
                 </div>
 
-                <div class="col-md-6">
+                <div style="padding: 5px">
                     <button class="btn btn-primary" type="submit" name="currentPage" @(Model.CurrentPage == 2 ? "disabled" : string.Empty) value="2">Gallery One</button>
                 </div>
 
-                <div class="col-md-6">
+                <div style="padding: 5px">
                     <button class="btn btn-primary" type="submit" name="currentPage" @(Model.CurrentPage == 3 ? "disabled" : string.Empty) value="3">Gallery Three</button>
                 </div>
             </div>
@@ -51,33 +51,160 @@
         {
             <input type="hidden" asp-for="SelectedSeats" value="@Model.SelectedSeats">
         }
-
-        @foreach (var seat in Model.Seats)
-        {
-            @if (seat.Row != rowCount)
-            {
-                rowCount++;
-
-                <br>
-            }
-
-
-            @if (seat.IsTaken)
-            {
-                <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@seat.Id">@seat.Number</button>
-            }
-            else if (seat.IsSelected)
-            {
-                <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@seat.Id">@seat.Number</button>
-            }
-            else
-            {
-                <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@seat.Id">@seat.Number</button>
-            }
-
-        }
     </div>
+
+    @{
+        var rowIndexMax = 0;
+        var rowIndexMin = 0;
+        var rowIndexIncrease = 0;
+    }
+
+
+    @foreach (var row in Model.Rows)
+    {
+        if (row == 1)
+        {
+            rowIndexMax = 20;
+            rowIndexIncrease = 20;
+        }
+        else if (row == 16)
+        {
+            rowIndexMax = 30;
+            rowIndexIncrease = 30;
+        }
+        else if (row == 21)
+        {
+            rowIndexMax = 25;
+            rowIndexIncrease = 25;
+        }
+
+
+        @if (rowIndexMax > Model.Seats.Count())
+        {
+            rowIndexMax = Model.Seats.Count();
+        }
+
+        if (row > 15 && row < 21)
+        {
+            <div class="row justify-content-center">
+
+                <div style="padding: 5px">
+
+                    @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                    {
+                        if (i < rowIndexMin + 10)
+                        {
+                            if (Model.Seats[i].IsTaken)
+                            {
+                                <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                            else if (Model.Seats[i].IsSelected)
+                            {
+                                <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                        }
+                        else if (i > rowIndexMin + 20)
+                        {
+                            if (Model.Seats[i].IsTaken)
+                            {
+                                <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                            else if (Model.Seats[i].IsSelected)
+                            {
+                                <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                        }
+                        else
+                        {
+                              <span></span>
+                        }
+
+                    }
+
+                </div>
+            </div>
+
+
+            <div class="row justify-content-center">
+
+                <div style="padding: 5px">
+
+                    @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                    {
+                        if (i < rowIndexMin + 10)
+                        {
+                               <span></span>
+                        }
+                        else if (i > rowIndexMin + 20)
+                        {
+
+                        }
+                        else
+                        {
+                            if (Model.Seats[i].IsTaken)
+                            {
+                                <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                            else if (Model.Seats[i].IsSelected)
+                            {
+                                <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            }
+                        }
+
+                    }
+
+                </div>
+            </div>
+        }
+
+
+        if (row < 16 || row > 20)
+        {
+            <div class="row justify-content-center">
+
+                <div style="padding: 5px">
+
+                    @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                    {
+                        if (Model.Seats[i].IsTaken)
+                        {
+                            <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                        }
+                        else if (Model.Seats[i].IsSelected)
+                        {
+                            <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                        }
+
+                    }
+
+                </div>
+
+            </div>
+        }
+
+
+        rowIndexMin = rowIndexMax;
+        rowIndexMax = rowIndexMax + rowIndexIncrease;
+
+    }
 </form>
-<div>
+
+<div class="row justify-content-center mt-2">
     <a class="btn btn-primary"  asp-controller="Tickets" asp-action="Review" asp-route-showId="@Model.ShowId" asp-route-selectedSeats="@Model.SelectedSeats">Book Seats</a>
 </div>

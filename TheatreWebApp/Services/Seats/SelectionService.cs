@@ -19,6 +19,8 @@ namespace TheatreWebApp.Services.Seats
             this.data = data;
         }
 
+        //Stages
+
         public SelectionServiceModel GetSelectedSeats(SelectionServiceModel input)
         {
             var seatsQuery = PrepareSeatingChart(input.Id, input.CurrentPage);
@@ -104,8 +106,51 @@ namespace TheatreWebApp.Services.Seats
             return input;
         }
 
+        //Users --
+             
+        public BookingFormModel GetSeatingChart(int showId, int currentPage = 1)
+        {
+            var stageId = data.Shows
+               .Where(s => s.Id == showId)
+               .Select(s => s.StageId)
+               .FirstOrDefault();
 
-        public IQueryable<Seat> PrepareSeatsQuery(int showId, int currentPage = 1)
+            var seatsQuery = PrepareSeatsQuery(showId);
+
+            var bookingChart = data.Shows
+                .Where(s => s.Id == showId)
+                .Select(s => new BookingFormModel
+                {
+                    ShowId = showId,
+                    PlayName = s.Play.Name,
+                    StageName = s.Stage.Name,
+                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time),
+                })
+                .FirstOrDefault();
+
+            bookingChart.Seats = PrepareBookingChart(null, showId, seatsQuery).ToList();
+
+            bookingChart.Rows = GetRows(seatsQuery);
+
+            return bookingChart;
+        }
+
+        public BookingFormModel GetSeatingChart(BookingFormModel bookingChart)
+        {
+            var seatsQuery = PrepareSeatsQuery(bookingChart.ShowId, bookingChart.CurrentPage);
+
+            var selectedSeatsList = GetSelectedSeats(bookingChart.SelectedSeats, bookingChart.SelectedSeatId);
+
+            bookingChart.SelectedSeats = string.Join(" ", selectedSeatsList);
+
+            bookingChart.Seats = PrepareBookingChart(selectedSeatsList, bookingChart.ShowId, seatsQuery).ToList();
+
+            bookingChart.Rows = GetRows(seatsQuery);
+
+            return bookingChart;
+        }
+
+        private IQueryable<Seat> PrepareSeatsQuery(int showId, int currentPage = 1)
         {
             var stageId = data.Shows
                .Where(s => s.Id == showId)
@@ -140,7 +185,7 @@ namespace TheatreWebApp.Services.Seats
             return seatsQuery;
         }
 
-        public List<int> GetSelectedSeats(string selectedSeats, int selectedSeatId)
+        private List<int> GetSelectedSeats(string selectedSeats, int selectedSeatId)
         {
             var selectedSeatsList = new List<int>();
 
@@ -175,41 +220,11 @@ namespace TheatreWebApp.Services.Seats
             return selectedSeatsList;
         }
 
-        public IEnumerable<SeatViewModel> PrepareBookingChart(List<int> selectedSeats, int showId, IQueryable<Seat> seatQuery)
+        private List<int> GetRows(IQueryable<Seat> seatsQuery)
         {
-            var takenSeats = GetTakenSeats(showId);
-            
-            if(selectedSeats != null)
-            {
-                var seats = seatQuery
-                    .Select(s => new SeatViewModel
-                    {
-                        Id = s.Id,
-                        Number = s.Number,
-                        Row = s.Row,
-                        IsSelected = selectedSeats.Contains(s.Id) ? true : false,
-                        IsTaken = takenSeats.Contains(s.Id) ? true : false
-                    })
-                    .ToList();
+            var rows = seatsQuery.Select(s => s.Row).Distinct().OrderBy(r => r).ToList();
 
-                return seats;
-            }
-            else
-            {
-                var seats = seatQuery
-                    .Select(s => new SeatViewModel
-                    {
-                        Id = s.Id,
-                        Number = s.Number,
-                        Row = s.Row,
-                        IsTaken = takenSeats.Contains(s.Id) ? true : false
-                    })
-                    .ToList();
-
-                return seats;
-            }
-
-
+            return rows;
         }
 
         private List<int?> GetTakenSeats(int showId)
@@ -222,5 +237,41 @@ namespace TheatreWebApp.Services.Seats
             return takenSeats;
         }
 
+        private IEnumerable<SeatServiceModel> PrepareBookingChart(List<int> selectedSeats, int showId, IQueryable<Seat> seatQuery)
+        {
+            var takenSeats = GetTakenSeats(showId);
+
+            if (selectedSeats != null)
+            {
+                var seats = seatQuery
+                    .Select(s => new SeatServiceModel
+                    {
+                        Id = s.Id,
+                        Number = s.Number,
+                        Row = s.Row,
+                        Price = s.SeatCategory.Price,
+                        IsSelected = selectedSeats.Contains(s.Id) ? true : false,
+                        IsTaken = takenSeats.Contains(s.Id) ? true : false
+                    })
+                    .ToList();
+
+                return seats;
+            }
+            else
+            {
+                var seats = seatQuery
+                    .Select(s => new SeatServiceModel
+                    {
+                        Id = s.Id,
+                        Number = s.Number,
+                        Row = s.Row,
+                        Price = s.SeatCategory.Price,
+                        IsTaken = takenSeats.Contains(s.Id) ? true : false
+                    })
+                    .ToList();
+
+                return seats;
+            }
+        }
     }
 }

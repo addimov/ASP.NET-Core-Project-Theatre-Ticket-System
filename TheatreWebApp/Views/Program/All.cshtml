@@ -74,7 +74,7 @@
                 <td>@show.StageName</td>
                 <td><b>@show.Time</b></td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="Tickets" asp-action="SelectSeats" asp-route-playId="@show.Id">Book now</a>
+                    <a class="btn btn-primary" asp-controller="Tickets" asp-action="SelectSeats" asp-route-showId="@show.Id">Book now</a>
                     <a class="btn btn-primary" asp-controller="Plays" asp-action="Details" asp-route-playId="@show.PlayId">Details</a>
                     <a class="btn btn-primary" asp-controller="Program" asp-action="Edit" asp-route-showId="@show.Id">Edit</a>
                 </td>
