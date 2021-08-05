@@ -1,4 +1,5 @@
 ﻿@using TheatreWebApp.Models.Plays
+@inject SignInManager<User> SignInManager
 
 @model IEnumerable<PlaysListViewModel>
 
@@ -9,22 +10,25 @@
 <div class="text-center">
     <h1>Plays</h1>
 
-    <p>
-        <a asp-action="Add">Add Play</a>
-    </p>
+    @if (User.IsAdmin())
+    {
+        <p>
+            <a asp-action="Add">Add Play</a>
+        </p>
+    }
 </div>
 
 <form method="get">
     <div class="offset-md-4 col-md-4">
-            <div class="form-group text-center">
-                <label>Search by term</label>
-                <input name="SearchTerm" class="form-control">
+        <div class="form-group text-center">
+            <label>Search by term</label>
+            <input name="SearchTerm" class="form-control">
+        </div>
+        <div class="form-group text-center">
+            <div style="display:flex; justify-content: center; align-items:center">
+                <button class="btn btn-primary" type="submit" name="SearchTerm">Search</button>
             </div>
-            <div class="form-group text-center">
-                <div style="display:flex; justify-content: center; align-items:center">
-                    <button class="btn btn-primary" type="submit" name="SearchTerm">Search</button>
-                </div>
-            </div>
+        </div>
     </div>
 </form>
 
@@ -41,8 +45,16 @@
                     <h5 class="card-title">@play.Name</h5>
                     <p class="card-text">@play.ShortDescription</p>
                     <a class="btn btn-primary" asp-controller="Plays" asp-action="Details" asp-route-playId="@play.Id">Details</a>
-                    <a class="btn btn-primary" asp-controller="Program" asp-action="All" asp-route-playId="@play.Id">Book now</a>
-                    <a class="btn btn-primary" asp-controller="Plays" asp-action="Edit" asp-route-playId="@play.Id">Edit</a>
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a class="btn btn-primary" asp-controller="Program" asp-action="All" asp-route-playId="@play.Id">Book now</a>
+                    }
+
+                    @if (User.IsAdmin())
+                    {
+                        <a class="btn btn-primary" asp-controller="Plays" asp-action="Edit" asp-route-playId="@play.Id">Edit</a>
+                    }
                 </div>
             </div>
         </div>

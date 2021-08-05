@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,9 +34,11 @@ namespace TheatreWebApp
                     Configuration.GetConnectionString("Connection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<User>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<TheatreDbContext>();
-            services.AddControllersWithViews();
+
+            services.AddControllersWithViews(options => options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>());
 
             services.Configure<IdentityOptions>(options =>
             {

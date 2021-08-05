@@ -1,6 +1,7 @@
 ﻿@using TheatreWebApp.Models.Program
 
 @model ShowQueryModel
+@inject SignInManager<User> SignInManager
 
 @{
     ViewData["Title"] = "Program";
@@ -9,9 +10,12 @@
 <div class="text-center">
     <h1>Program</h1>
 
-    <p>
-        <a asp-action="Add">Add Show</a>
-    </p>
+    @if (User.IsAdmin())
+    {
+        <p>
+            <a asp-action="Add">Add Show</a>
+        </p>
+    }
 </div>
 
 
@@ -74,9 +78,17 @@
                 <td>@show.StageName</td>
                 <td><b>@show.Time</b></td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="Tickets" asp-action="SelectSeats" asp-route-showId="@show.Id">Book now</a>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a class="btn btn-primary" asp-controller="Tickets" asp-action="SelectSeats" asp-route-showId="@show.Id">Book now</a>
+                    }
+
                     <a class="btn btn-primary" asp-controller="Plays" asp-action="Details" asp-route-playId="@show.PlayId">Details</a>
-                    <a class="btn btn-primary" asp-controller="Program" asp-action="Edit" asp-route-showId="@show.Id">Edit</a>
+
+                    @if (User.IsAdmin())
+                    {
+                        <a class="btn btn-primary" asp-controller="Program" asp-action="Edit" asp-route-showId="@show.Id">Edit</a>
+                    }
                 </td>
             </tr>
         }

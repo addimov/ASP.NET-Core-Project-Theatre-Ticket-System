@@ -1,4 +1,5 @@
 ﻿@using TheatreWebApp.Models.Plays
+@inject SignInManager<User> SignInManager
 
 @model PlayDetailsViewModel
 
@@ -12,29 +13,35 @@
             <div class="d-flex justify-content-center">
                 <img class="d-block w-80" src="@Model.ImageUrl" alt="@Model.Name" />
             </div>
-            
+
             <h1 class="text-center display-3">@Model.Name</h1>
 
 
             <div class="row d-flex justify-content-center">
-                <div style="padding: 5px">
-                    <a class="btn btn-primary" asp-controller="Program" asp-action="All" asp-route-playId="@Model.Id">Book now</a>
-                </div>
-                <div style="padding: 5px">
-                    <a class="btn btn-primary" asp-controller="Plays" asp-action="Edit" asp-route-playId="@Model.Id">Edit</a>
-                </div>
-                @if (!Model.IsHidden)
+                @if (SignInManager.IsSignedIn(User))
                 {
                     <div style="padding: 5px">
-                        <a class="btn btn-primary" asp-controller="Plays" asp-action="Hide" asp-route-playId="@Model.Id">Hide</a>
+                        <a class="btn btn-primary" asp-controller="Program" asp-action="All" asp-route-playId="@Model.Id">Book now</a>
                     </div>
-
                 }
-                else
+                @if (User.IsAdmin())
                 {
                     <div style="padding: 5px">
-                        <a class="btn btn-primary" asp-controller="Plays" asp-action="Hide" asp-route-playId="@Model.Id">Unhide</a>
+                        <a class="btn btn-primary" asp-controller="Plays" asp-action="Edit" asp-route-playId="@Model.Id">Edit</a>
                     </div>
+                    @if (!Model.IsHidden)
+                    {
+                        <div style="padding: 5px">
+                            <a class="btn btn-primary" asp-controller="Plays" asp-action="Hide" asp-route-playId="@Model.Id">Hide</a>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div style="padding: 5px">
+                            <a class="btn btn-primary" asp-controller="Plays" asp-action="Hide" asp-route-playId="@Model.Id">Unhide</a>
+                        </div>
+                    }
                 }
 
             </div>

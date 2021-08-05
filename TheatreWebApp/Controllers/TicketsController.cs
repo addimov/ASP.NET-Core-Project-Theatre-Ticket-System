@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
@@ -23,6 +24,7 @@ namespace TheatreWebApp.Controllers
             this.selection = selection;
         }
 
+        [Authorize]
         public IActionResult All()
         {
             var tickets = data.Tickets
@@ -43,6 +45,7 @@ namespace TheatreWebApp.Controllers
             return View(tickets);
         }
 
+        [Authorize]
         public IActionResult SelectSeats(int showId)
         {
 
@@ -50,13 +53,14 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult SelectSeats(BookingFormModel bookingChart)
         {
 
             return View(selection.GetSeatingChart(bookingChart));
         }
 
-
+        [Authorize]
         public IActionResult Review(int showId, string selectedSeats)
         {
             var ticket = new Ticket
@@ -102,6 +106,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Review(TicketFormModel ticketForm)
         {
             var ticket = data.Tickets

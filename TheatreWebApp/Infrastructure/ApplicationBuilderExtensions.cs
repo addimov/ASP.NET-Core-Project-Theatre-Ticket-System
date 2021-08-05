@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TheatreWebApp.Data;
@@ -14,26 +17,67 @@ namespace TheatreWebApp.Infrastructure
             this IApplicationBuilder app)
         {
             using var scopedServices = app.ApplicationServices.CreateScope();
+            var services = scopedServices.ServiceProvider;
 
-            var data = scopedServices.ServiceProvider.GetService<TheatreDbContext>();
+            var data = services.GetRequiredService<TheatreDbContext>();
 
             //data.Database.EnsureDeleted();
             data.Database.EnsureCreated();
 
 
-            SeedStages(data);
+            SeedStages(services);
 
-            SeedSeatCategories(data);
+            SeedSeatCategories(services);
 
-            SeedSeats(data);
+            SeedSeats(services);
 
-            SeedReservationStatuses(data);
+            SeedReservationStatuses(services);
+
+            SeedAdmin(services);
 
             return app;
         }
 
-        private static void SeedStages(TheatreDbContext data)
+        private static void SeedAdmin(IServiceProvider services)
         {
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            Task
+                .Run(async () =>
+                {
+                    if (await roleManager.RoleExistsAsync("Administrator"))
+                    {
+                        return;
+                    }
+
+                    var role = new IdentityRole { Name = "Administrator" };
+
+                    await roleManager.CreateAsync(role);
+
+                    const string adminEmail = "admin@theatre.com";
+                    const string adminPassword = "admin";
+
+                    var user = new User
+                    {
+                        Email = adminEmail,
+                        UserName = adminEmail
+                    };
+
+                    await userManager.CreateAsync(user, adminPassword);
+
+                    await userManager.AddToRoleAsync(user, role.Name);
+                })
+                .GetAwaiter()
+                .GetResult();
+                
+        }
+
+
+        private static void SeedStages(IServiceProvider services)
+        {
+            var data = services.GetRequiredService<TheatreDbContext>();
+
             if (data.Stages.Any())
             {
                 return;
@@ -49,8 +93,10 @@ namespace TheatreWebApp.Infrastructure
 
         }
 
-        private static void SeedSeatCategories(TheatreDbContext data)
+        private static void SeedSeatCategories(IServiceProvider services)
         {
+            var data = services.GetRequiredService<TheatreDbContext>();
+
             if (data.SeatCategories.Any())
             {
                 return;
@@ -72,16 +118,18 @@ namespace TheatreWebApp.Infrastructure
 
         }
 
-        private static void SeedSeats(TheatreDbContext data)
+        private static void SeedSeats(IServiceProvider services)
         {
+            var data = services.GetRequiredService<TheatreDbContext>();
+
             if (data.Seats.Any())
             {
                 return;
             }
            
 
-            var seatsBigStage = PrepareSeatsBigStage(data);
-            var seatsSmallStage = PrepareSeatsSmallStage(data);
+            var seatsBigStage = PrepareSeatsBigStage(services);
+            var seatsSmallStage = PrepareSeatsSmallStage(services);
 
             data.AddRange(seatsBigStage);
             data.AddRange(seatsSmallStage);
@@ -89,8 +137,10 @@ namespace TheatreWebApp.Infrastructure
 
         }
 
-        private static void SeedReservationStatuses(TheatreDbContext data)
+        private static void SeedReservationStatuses(IServiceProvider services)
         {
+            var data = services.GetRequiredService<TheatreDbContext>();
+
             if (data.ReservationStatuses.Any())
             {
                 return;
@@ -107,8 +157,10 @@ namespace TheatreWebApp.Infrastructure
             data.SaveChanges();
         }
 
-        private static List<Seat> PrepareSeatsBigStage(TheatreDbContext data)
+        private static List<Seat> PrepareSeatsBigStage(IServiceProvider services)
         {
+            var data = services.GetRequiredService<TheatreDbContext>();
+
             int maxSeatsBig = data.Stages.Where(s => s.Name == "Big stage").Select(s => s.MaxSeats).FirstOrDefault();
 
             //Stalls seats - 300, galleries - 150 and 100
@@ -202,8 +254,10 @@ namespace TheatreWebApp.Infrastructure
             return seatsBigStage;
         }
 
-        private static List<Seat> PrepareSeatsSmallStage(TheatreDbContext data)
+        private static List<Seat> PrepareSeatsSmallStage(IServiceProvider services)
         {
+            var data = services.GetRequiredService<TheatreDbContext>();
+
             int maxSeatsSmall = data.Stages.Where(s => s.Name == "Small stage").Select(s => s.MaxSeats).FirstOrDefault();
 
             var seats = new List<Seat>();
@@ -230,5 +284,6 @@ namespace TheatreWebApp.Infrastructure
 
             return seats;
         }
+
     }
 }

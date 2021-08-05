@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
@@ -39,12 +40,14 @@ namespace TheatreWebApp.Controllers
             return View(plays);
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Add()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Add(PlayFormModel play)
         {
             if (!ModelState.IsValid)
@@ -92,6 +95,7 @@ namespace TheatreWebApp.Controllers
             return View(play);
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Hide(int playId)
         {
             var play = data.Plays
@@ -114,7 +118,7 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("Details", new { playId = playId});
         }
 
-
+        [Authorize(Roles = "Administrator")]
         public IActionResult Edit(int playId)
         {
             var play = data.Plays
@@ -134,6 +138,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Edit(PlayFormModel play)
         {
             var playUpdated = data.Plays

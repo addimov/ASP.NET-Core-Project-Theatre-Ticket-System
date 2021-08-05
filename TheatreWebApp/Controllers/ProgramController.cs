@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
@@ -71,6 +72,7 @@ namespace TheatreWebApp.Controllers
             return View(showForm);
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Add()
         {
             var show = new AddShowFormModel
@@ -83,6 +85,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Add(AddShowFormModel show)
         {
             if(!data.Plays.Any(p => p.Id == show.PlayId))
@@ -117,6 +120,7 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("All");
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Edit(int showId)
         {
             var show = data.Shows
@@ -131,6 +135,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Edit(EditShowFormModel showForm)
         {
             var show = data.Shows
