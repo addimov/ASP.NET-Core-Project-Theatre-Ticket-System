@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
-using TheatreWebApp.Models.Stages;
+using TheatreWebApp.Infrastructure;
 using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Seats;
 
@@ -28,6 +26,7 @@ namespace TheatreWebApp.Controllers
         public IActionResult All()
         {
             var tickets = data.Tickets
+                .Where(t => t.UserId == this.User.Id())
                 .Select(t => new TicketViewModel
                 {
                     ShowId = t.Show.Id,
@@ -66,9 +65,9 @@ namespace TheatreWebApp.Controllers
             var ticket = new Ticket
             {
                 ShowId = showId,
-                ReservationStatusId = data.ReservationStatuses.Where(s => s.Name == "Unconfirmed").Select(s => s.Id).FirstOrDefault()
+                ReservationStatusId = data.ReservationStatuses.Where(s => s.Name == "Unconfirmed").Select(s => s.Id).FirstOrDefault(),
+                UserId = this.User.Id()
             };
-
 
             var reservations = new List<Reservation>();
 
@@ -76,9 +75,17 @@ namespace TheatreWebApp.Controllers
 
             foreach (var seatId in selectedSeatsList)
             {
+                var seatIsTaken = data.Reservations.Where(r => r.ShowId == showId && r.SeatId == seatId).Any();
+
+                if (seatIsTaken)
+                {
+                    //add tempdata error message
+                    return View("SelectSeats", new { showId = showId});
+                }
                 reservations.Add(new Reservation
                 {
                     SeatId = seatId,
+                    ShowId = showId,
                     Price = data.Seats.Select(s => s.SeatCategory).Select(c => c.Price).FirstOrDefault()
                 });
             }

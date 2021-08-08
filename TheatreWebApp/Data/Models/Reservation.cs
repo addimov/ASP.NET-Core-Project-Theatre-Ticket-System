@@ -21,6 +21,10 @@ namespace TheatreWebApp.Data.Models
 
         public Ticket Ticket { get; set; }
 
+        public int? ShowId { get; set; }
+
+        public Show Show { get; set; }
+
     }
 
 }

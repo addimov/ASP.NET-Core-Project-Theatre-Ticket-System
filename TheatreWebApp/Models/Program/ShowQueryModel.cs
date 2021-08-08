@@ -7,6 +7,8 @@ namespace TheatreWebApp.Models.Program
 {
     public class ShowQueryModel
     {
+        public const int ShowsPerPage = 10;
+
         public int PlayId { get; set; }
 
         public string SearchTerm { get; set; }
@@ -14,6 +16,10 @@ namespace TheatreWebApp.Models.Program
         public string AfterDate { get; set; }
 
         public string BeforeDate { get; set; }
+
+        public int CurrentPage { get; set; } = 1;
+
+        public int TotalShows { get; set; }
 
         public IEnumerable<ShowQueryPlayModel> Plays { get; set; }
 

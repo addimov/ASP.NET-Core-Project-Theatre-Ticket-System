@@ -17,14 +17,20 @@ namespace TheatreWebApp.Controllers
             this.data = data;
         }
 
-        public IActionResult All(string searchTerm)
+        public IActionResult All([FromQuery] PlayQueryModel playsForm)
         {
-            var playsQuery = data.Plays.AsQueryable();
+            var playsQuery = data.Plays.OrderByDescending(p => p.Id).AsQueryable();
 
-            if(searchTerm != null)
+            if(playsForm.SearchTerm != null)
             {
-                playsQuery = playsQuery.Where(p => p.Name.Contains(searchTerm) || p.Description.Contains(searchTerm) || p.ShortDescription.Contains(searchTerm));
+                playsQuery = playsQuery.Where(p => p.Name.Contains(playsForm.SearchTerm) || p.Description.Contains(playsForm.SearchTerm) || p.ShortDescription.Contains(playsForm.SearchTerm));
             }
+
+            playsForm.TotalPlays = playsQuery.Count();
+
+            playsQuery = playsQuery
+                .Skip((playsForm.CurrentPage - 1) * PlayQueryModel.PlaysPerPage)
+                .Take(PlayQueryModel.PlaysPerPage);
 
             var plays = playsQuery
                 .Select(p => new PlaysListViewModel 
@@ -36,8 +42,9 @@ namespace TheatreWebApp.Controllers
                 })
                 .ToList();
 
+            playsForm.Plays = plays;
 
-            return View(plays);
+            return View(playsForm);
         }
 
         [Authorize(Roles = "Administrator")]

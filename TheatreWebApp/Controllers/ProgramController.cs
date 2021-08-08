@@ -44,6 +44,11 @@ namespace TheatreWebApp.Controllers
                 showQuery = showQuery.Where(s => s.Time < date);
             }
 
+            showForm.TotalShows = showQuery.Count();
+
+            showQuery = showQuery
+                .Skip((showForm.CurrentPage - 1) * ShowQueryModel.ShowsPerPage)
+                .Take(ShowQueryModel.ShowsPerPage);
 
             var shows = showQuery
                 .Select(s => new ShowViewModel
@@ -68,6 +73,7 @@ namespace TheatreWebApp.Controllers
 
             showForm.Shows = shows;
             showForm.Plays = plays;
+
 
             return View(showForm);
         }
