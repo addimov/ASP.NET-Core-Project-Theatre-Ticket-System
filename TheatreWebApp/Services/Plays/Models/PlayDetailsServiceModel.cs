@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace TheatreWebApp.Models.Plays
+namespace TheatreWebApp.Services.Plays.Models
 {
-    public class PlayDetailsViewModel
+    public class PlayDetailsServiceModel
     {
         public int Id { get; set; }
 

@@ -47,6 +47,12 @@
         }
     </div>
 
+    <hr />
+    <div class="row justify-content-center">
+        <div>Stage</div>
+    </div>
+    <hr />
+
     @{
         var rowIndexMax = 0;
         var rowIndexMin = 0;
@@ -78,6 +84,23 @@
             rowIndexMax = Model.Seats.Count();
         }
 
+        if (row < 16)
+        {
+            <div class="row justify-content-center">
+
+                <div style="padding: 5px">
+
+                    @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                    {
+                        <partial name="_SeatPartial" model="@Model.Seats[i]" />               
+                    }
+
+                </div>
+
+            </div>
+        }
+
+
         if (row > 15 && row < 21)
         {
             <div class="row justify-content-center">
@@ -88,37 +111,15 @@
                     {
                         if (i < rowIndexMin + 10)
                         {
-                            if (Model.Seats[i].IsTaken)
-                            {
-                                <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
-                            else if (Model.Seats[i].IsSelected)
-                            {
-                                <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
+                            <partial name="_SeatPartial" model="@Model.Seats[i]" />
                         }
                         else if (i > rowIndexMin + 20)
                         {
-                            if (Model.Seats[i].IsTaken)
-                            {
-                                <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
-                            else if (Model.Seats[i].IsSelected)
-                            {
-                                <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
+                            <partial name="_SeatPartial" model="@Model.Seats[i]" />
                         }
                         else
                         {
-                              <span></span>
+                            <span></span>
                         }
 
                     }
@@ -135,7 +136,7 @@
                     {
                         if (i < rowIndexMin + 10)
                         {
-                               <span></span>
+                            <span></span>
                         }
                         else if (i > rowIndexMin + 20)
                         {
@@ -143,18 +144,7 @@
                         }
                         else
                         {
-                            if (Model.Seats[i].IsTaken)
-                            {
-                                <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
-                            else if (Model.Seats[i].IsSelected)
-                            {
-                                <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
-                            }
+                            <partial name="_SeatPartial" model="@Model.Seats[i]" />
                         }
 
                     }
@@ -163,8 +153,7 @@
             </div>
         }
 
-
-        if (row < 16 || row > 20)
+        if (row > 20)
         {
             <div class="row justify-content-center">
 
@@ -172,25 +161,51 @@
 
                     @for (int i = rowIndexMin; i < rowIndexMax; i++)
                     {
-                        if (Model.Seats[i].IsTaken)
+                        if (i < rowIndexMin + 9)
                         {
-                            <button class="btn btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            <partial name="_SeatPartial" model="@Model.Seats[i]" />
                         }
-                        else if (Model.Seats[i].IsSelected)
+                        else if (i > rowIndexMin + 18)
                         {
-                            <button class="btn btn-primary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            <partial name="_SeatPartial" model="@Model.Seats[i]" />
                         }
                         else
                         {
-                            <button class="btn btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Seats[i].Id">@Model.Seats[i].Row</button>
+                            <span></span>
                         }
 
                     }
 
                 </div>
+            </div>
 
+
+            <div class="row justify-content-center">
+
+                <div style="padding: 5px">
+
+                    @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                    {
+                        if (i < rowIndexMin + 9)
+                        {
+                            <span></span>
+                        }
+                        else if (i > rowIndexMin + 18)
+                        {
+
+                        }
+                        else
+                        {
+                            <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                        }
+
+                    }
+
+                </div>
             </div>
         }
+
+
 
 
         rowIndexMin = rowIndexMax;

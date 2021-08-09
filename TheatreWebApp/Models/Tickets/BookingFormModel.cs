@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TheatreWebApp.Models.Stages;
 using TheatreWebApp.Services.Seats;
+using TheatreWebApp.Services.Seats.Models;
 
 namespace TheatreWebApp.Models.Tickets
 {

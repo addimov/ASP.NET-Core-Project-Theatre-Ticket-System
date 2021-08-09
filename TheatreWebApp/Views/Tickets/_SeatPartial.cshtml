@@ -1,0 +1,18 @@
+﻿@using TheatreWebApp.Services.Seats.Models
+
+@model SeatServiceModel
+
+@if (Model.IsTaken)
+{
+    <button class="btn btn-sm btn-warning" type="submit" disabled name="SelectedSeatId" value="@Model.Id">@Model.Number</button>
+}
+else if (Model.IsSelected)
+{
+    <button class="btn btn-sm btn-primary" type="submit" name="SelectedSeatId" value="@Model.Id">@Model.Number</button>
+}
+else
+{
+    <button class="btn btn-sm btn-secondary" type="submit" name="SelectedSeatId" value="@Model.Id">@Model.Number</button>
+}
+
+       

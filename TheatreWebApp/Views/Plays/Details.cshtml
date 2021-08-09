@@ -1,7 +1,8 @@
-﻿@using TheatreWebApp.Models.Plays
+﻿@using TheatreWebApp.Services.Plays.Models
+
 @inject SignInManager<User> SignInManager
 
-@model PlayDetailsViewModel
+@model PlayDetailsServiceModel
 
 @{
     ViewData["Title"] = $"{Model.Name}";

@@ -7,6 +7,7 @@ using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Models.Stages;
 using TheatreWebApp.Models.Tickets;
+using TheatreWebApp.Services.Seats.Models;
 
 namespace TheatreWebApp.Services.Seats
 {

@@ -10,6 +10,7 @@ using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Infrastructure;
 using TheatreWebApp.Services.Categories;
+using TheatreWebApp.Services.Plays;
 using TheatreWebApp.Services.Seats;
 
 namespace TheatreWebApp
@@ -52,6 +53,7 @@ namespace TheatreWebApp
 
             services.AddTransient<ISelectionService, SelectionService>();
             services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IPlayService, PlayService>();
         }
 
 
