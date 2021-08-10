@@ -22,7 +22,7 @@
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <div style="padding: 5px">
-                        <a class="btn btn-primary" asp-controller="Program" asp-action="All" asp-route-playId="@Model.Id">Book now</a>
+                        <a class="btn btn-primary" asp-controller="Shows" asp-action="All" asp-route-playId="@Model.Id">Book now</a>
                     </div>
                 }
                 @if (User.IsAdmin())

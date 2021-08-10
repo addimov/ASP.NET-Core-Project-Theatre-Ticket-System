@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TheatreWebApp.Data.Models;
 
-namespace TheatreWebApp.Models.Program
+namespace TheatreWebApp.Models.Shows
 {
     public class AddShowFormModel
     {

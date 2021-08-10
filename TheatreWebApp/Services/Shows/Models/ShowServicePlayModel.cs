@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TheatreWebApp.Models.Program
+namespace TheatreWebApp.Services.Shows.Models
 {
-    public class ShowQueryPlayModel
+    public class ShowServicePlayModel
     {
         public int Id { get; set; }
 

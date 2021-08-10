@@ -70,8 +70,8 @@ namespace TheatreWebApp.Services.Plays
             var totalPlays = playsQuery.Count();
 
             playsQuery = playsQuery
-                .Skip((currentPage - 1) * PlayQueryModel.PlaysPerPage)
-                .Take(PlayQueryModel.PlaysPerPage);
+                .Skip((currentPage - 1) * playsPerPage)
+                .Take(playsPerPage);
 
             var plays = playsQuery
                 .Select(p => new PlayServiceModel

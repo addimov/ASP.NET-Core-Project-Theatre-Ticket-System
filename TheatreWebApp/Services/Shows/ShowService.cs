@@ -1,57 +1,80 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
-using TheatreWebApp.Models.Program;
+using TheatreWebApp.Models.Shows;
+using TheatreWebApp.Services.Shows.Models;
 
-namespace TheatreWebApp.Controllers
+namespace TheatreWebApp.Services.Shows
 {
-    public class ProgramController : Controller
+    public class ShowService : IShowService
     {
         private readonly TheatreDbContext data;
 
-        public ProgramController(TheatreDbContext data)
+        public ShowService(TheatreDbContext data)
         {
             this.data = data;
         }
 
-        public IActionResult All([FromQuery]ShowQueryModel showForm)
+        public void Add(
+            int playId, 
+            int stageId, 
+            string date, 
+            string time)
+        {
+            var show = new Show
+            {
+                Play = data.Plays.Find(playId),
+                Stage = data.Stages.Find(stageId),
+                Time = GetShowTime(date, time)
+            };
+
+            data.Shows.Add(show);
+            data.SaveChanges();
+        }
+
+        public ShowQueryModel All( 
+            int playId = 0, 
+            string searchTerm = null, 
+            string afterDate = null, 
+            string beforeDate = null, 
+            int currentPage = 1,
+            int showsPerPage = int.MaxValue)
         {
             var showQuery = data.Shows.OrderByDescending(s => s.Time).AsQueryable();
 
-            if(showForm.PlayId != 0)
+            if (playId != 0)
             {
-                showQuery = showQuery.Where(s => s.PlayId == showForm.PlayId);
+                showQuery = showQuery.Where(s => s.PlayId == playId);
             }
-            if(showForm.SearchTerm != null)
+            if (searchTerm != null)
             {
-                showQuery = showQuery.Where(s => s.Play.Name.Contains(showForm.SearchTerm) || s.Play.ShortDescription.Contains(showForm.SearchTerm));
+                showQuery = showQuery.Where(s => s.Play.Name.Contains(searchTerm) || s.Play.ShortDescription.Contains(searchTerm));
             }
-            if(showForm.AfterDate != null)
+            if (afterDate != null)
             {
-                var date = GetDateFromQuery(showForm.AfterDate);
+                var date = GetDateFromQuery(afterDate);
 
                 showQuery = showQuery.Where(s => s.Time > date);
             }
-            if (showForm.BeforeDate != null)
+            if (beforeDate != null)
             {
-                var date = GetDateFromQuery(showForm.BeforeDate);
+                var date = GetDateFromQuery(beforeDate);
 
                 showQuery = showQuery.Where(s => s.Time < date);
             }
 
-            showForm.TotalShows = showQuery.Count();
+            var totalShows = showQuery.Count();
 
             showQuery = showQuery
-                .Skip((showForm.CurrentPage - 1) * ShowQueryModel.ShowsPerPage)
-                .Take(ShowQueryModel.ShowsPerPage);
+                .Skip((currentPage - 1) * showsPerPage)
+                .Take(showsPerPage);
 
-            var shows = showQuery
-                .Select(s => new ShowViewModel
+            var showsList = showQuery
+                .Select(s => new ShowServiceModel
                 {
                     Id = s.Id,
                     PlayName = s.Play.Name,
@@ -62,72 +85,44 @@ namespace TheatreWebApp.Controllers
                 })
                 .ToList();
 
-            var plays = data.Plays
-                .Where(p => p.IsHidden == false)
-                .Select(p => new ShowQueryPlayModel
+            var activePlays = data.Shows.Select(s => s.PlayId).Distinct().ToList();
+
+            var playsList = data.Plays
+                .Where(p => activePlays.Contains(p.Id))
+                .Select(p => new ShowServicePlayModel
                 {
                     Id = p.Id,
                     Name = p.Name
                 })
                 .ToList();
 
-            showForm.Shows = shows;
-            showForm.Plays = plays;
+            var showsModel = new ShowQueryModel
+            {
+                PlayId = playId,
+                CurrentPage = currentPage,
+                SearchTerm = searchTerm,
+                AfterDate = afterDate,
+                BeforeDate = beforeDate,
+                TotalShows = totalShows,
+                Shows = showsList,
+                Plays = playsList
+            };
 
-
-            return View(showForm);
+            return showsModel;
         }
 
-        [Authorize(Roles = "Administrator")]
-        public IActionResult Add()
+        public AddShowFormModel PrepareForm()
         {
             var show = new AddShowFormModel
             {
                 Plays = data.Plays.Select(p => p).ToList(),
                 Stages = data.Stages.Select(st => st).ToList()
-            }; 
-            
-            return View(show);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Administrator")]
-        public IActionResult Add(AddShowFormModel show)
-        {
-            if(!data.Plays.Any(p => p.Id == show.PlayId))
-            {
-                this.ModelState.AddModelError(nameof(show.PlayId), "Play does not exist.");
-            }
-
-            if (!data.Stages.Any(s => s.Id == show.StageId))
-            {
-                this.ModelState.AddModelError(nameof(show.StageId), "Stage does not exist.");
-            }
-
-
-            if (!ModelState.IsValid)
-            {
-                show.Plays = data.Plays.Select(p => p).ToList();
-                show.Stages = data.Stages.Select(st => st).ToList();
-
-                return View(show);
-            }
-
-            var showToAdd = new Show
-            {
-                Play = data.Plays.Find(show.PlayId),
-                Stage = data.Stages.Find(show.StageId),
-                Time = GetShowTime(show.Date, show.Time)
             };
 
-            data.Shows.Add(showToAdd);
-            data.SaveChanges();
-
-            return RedirectToAction("All");
+            return show;
         }
 
-        [Authorize(Roles = "Administrator")]
-        public IActionResult Edit(int showId)
+        public EditShowFormModel PrepareEditForm(int showId)
         {
             var show = data.Shows
                 .Where(s => s.Id == showId)
@@ -137,12 +132,10 @@ namespace TheatreWebApp.Controllers
                 })
                 .FirstOrDefault();
 
-            return View(show);
+            return show;
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Administrator")]
-        public IActionResult Edit(EditShowFormModel showForm)
+        public void Edit(EditShowFormModel showForm)
         {
             var show = data.Shows
                 .Where(s => s.Id == showForm.Id)
@@ -153,23 +146,16 @@ namespace TheatreWebApp.Controllers
 
             data.Shows.Update(show);
             data.SaveChanges();
-
-            return RedirectToAction("All");
         }
 
-
-        private static DateTime GetShowTime(string date, string hour)
+        public bool PlayExists(int playId)
         {
-            var timeString = date + " " + hour;
+            return data.Plays.Any(p => p.Id == playId);
+        }
 
-            var isValid = DateTime.TryParseExact(timeString, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showTime);
-
-            if (!isValid)
-            {
-                return DateTime.Parse("12/07/2021 19:00");
-            }
-
-            return showTime;
+        public bool StageExists(int stageId)
+        {
+            return data.Stages.Any(p => p.Id == stageId);
         }
 
         private static DateTime GetDateFromQuery(string query)
@@ -177,7 +163,7 @@ namespace TheatreWebApp.Controllers
             var currentMonth = DateTime.UtcNow.Month.ToString("d2");
             var currentYear = DateTime.UtcNow.Year.ToString("d4");
 
-            if(query.Length < 3)
+            if (query.Length < 3)
             {
                 var sb = new StringBuilder();
                 sb.Append(query);
@@ -196,8 +182,8 @@ namespace TheatreWebApp.Controllers
                 }
 
                 return showTime;
-            } 
-            else if(query.Length < 6)
+            }
+            else if (query.Length < 6)
             {
                 var sb = new StringBuilder();
                 sb.Append(query);
@@ -214,7 +200,7 @@ namespace TheatreWebApp.Controllers
                 }
 
                 return showTime;
-            } 
+            }
             else
             {
 
@@ -228,6 +214,21 @@ namespace TheatreWebApp.Controllers
                 return showTime;
             }
         }
+
+        private static DateTime GetShowTime(string date, string hour)
+        {
+            var timeString = date + " " + hour;
+
+            var isValid = DateTime.TryParseExact(timeString, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showTime);
+
+            if (!isValid)
+            {
+                return DateTime.Parse("12/07/2021 19:00");
+            }
+
+            return showTime;
+        }
+
 
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using TheatreWebApp.Services.Shows.Models;
 
-namespace TheatreWebApp.Models.Program
+namespace TheatreWebApp.Models.Shows
 {
     public class ShowQueryModel
     {
@@ -21,8 +21,8 @@ namespace TheatreWebApp.Models.Program
 
         public int TotalShows { get; set; }
 
-        public IEnumerable<ShowQueryPlayModel> Plays { get; set; }
+        public IEnumerable<ShowServicePlayModel> Plays { get; set; }
 
-        public IEnumerable<ShowViewModel> Shows { get; set; }
+        public IEnumerable<ShowServiceModel> Shows { get; set; }
     }
 }

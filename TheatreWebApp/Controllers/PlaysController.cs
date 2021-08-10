@@ -41,14 +41,14 @@ namespace TheatreWebApp.Controllers
                 return View();
             }
 
-            plays.Add(play.Name, play.Description, play.ShortDescription, play.Credits, play.ImageUrl);
+            this.plays.Add(play.Name, play.Description, play.ShortDescription, play.Credits, play.ImageUrl);
             
             return RedirectToAction("All");
         }
 
         public IActionResult Details(int playId)
         {
-            var play = plays.Details(playId);
+            var play = this.plays.Details(playId);
 
             return View(play);
         }
@@ -56,7 +56,7 @@ namespace TheatreWebApp.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult Hide(int playId)
         {
-            plays.ChangeVisibility(playId);
+            this.plays.ChangeVisibility(playId);
 
             return RedirectToAction("Details", new { playId = playId});
         }
@@ -64,7 +64,7 @@ namespace TheatreWebApp.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult Edit(int playId)
         {
-            var play = plays.FormDetails(playId);
+            var play = this.plays.FormDetails(playId);
 
             return View(play);
         }
@@ -73,7 +73,7 @@ namespace TheatreWebApp.Controllers
         [Authorize(Roles = "Administrator")]
         public IActionResult Edit(PlayFormModel play)
         {
-            plays.Edit(play);
+            this.plays.Edit(play);
            
             return RedirectToAction("Details", new { playId = play.Id});
         }
