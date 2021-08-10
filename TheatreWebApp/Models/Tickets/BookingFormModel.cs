@@ -14,9 +14,9 @@ namespace TheatreWebApp.Models.Tickets
 
         public string PlayName { get; set; }
 
-        public string StageName { get; set; }
-
         public string Time { get; set; }
+
+        public string StageName { get; set; }
 
         public List<SeatServiceModel> Seats { get; set; }
 

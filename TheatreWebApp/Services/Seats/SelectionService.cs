@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
-using TheatreWebApp.Models.Stages;
 using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Seats.Models;
 
@@ -20,91 +17,70 @@ namespace TheatreWebApp.Services.Seats
             this.data = data;
         }
 
-        //Stages
+        //Stages --
 
-        public SelectionServiceModel GetSelectedSeats(SelectionServiceModel input)
+        public StageServiceModel StageDetails(int stageId, int currentPage = 1)
         {
-            var seatsQuery = PrepareSeatingChart(input.Id, input.CurrentPage);
-
-            input = SeatSelector(input, seatsQuery);
-
-            return input;
-        }
-
-        public IQueryable<Seat> PrepareSeatingChart(int stageId, int currentPage)
-        {
-            var seatsQuery = data.Seats
-                .Where(s => s.StageId == stageId)
-                .Select(s => s)
-                .OrderBy(s => s.Row)
-                .ThenBy(s => s.Number)
-                .AsQueryable();
-
-            if (stageId == 2)
-            {
-                currentPage = 1;
-            }
-
-            if (currentPage == 1)
-            {
-                seatsQuery = seatsQuery.Take(300);
-            }
-            else if (currentPage == 2)
-            {
-                seatsQuery = seatsQuery.Skip(300).Take(150);
-            }
-            else if (currentPage == 3)
-            {
-                seatsQuery = seatsQuery.Skip(450).Take(100);
-            }
-
-            return seatsQuery;
-        }
-
-
-        private SelectionServiceModel SeatSelector(SelectionServiceModel input, IQueryable<Seat> seatsQuery)
-        {
-            var selectedSeat = data.Seats
-                .Where(s => s.Id == input.SelectedSeatId)
-                .Select(s => s.Id)
+            var stage = data.Stages
+                .Where(s => s.Id == stageId)
+                .Select(s => new StageServiceModel
+                {
+                    Id = stageId,
+                    Name = s.Name
+                })
                 .FirstOrDefault();
 
-            var selectedSeatsList = new List<int>();
+            var seatsQuery = GetSeats(stageId, currentPage);
 
-            if (input.SelectedSeats == null)
-            {
-                selectedSeatsList.Add(selectedSeat);
-
-            }
-            else
-            {
-                selectedSeatsList = input.SelectedSeats.Split().Select(int.Parse).ToList();
-
-                if (selectedSeatsList.Contains(selectedSeat))
+            stage.Seats = seatsQuery
+                .Select(s => new SeatServiceModel
                 {
-                    selectedSeatsList.Remove(selectedSeat);
-                }
-                else
-                {
-                    selectedSeatsList.Add(selectedSeat);
-                }
-            }
+                    Id = s.Id,
+                    Number = s.Number,
+                    Price = s.SeatCategory.Price,
+                    Row = s.Row
+                })
+                .ToList();
 
-            input.SelectedSeats = string.Join(" ", selectedSeatsList);
+            stage.Rows = GetRows(seatsQuery);
 
-            input.Seats = seatsQuery
-            .Select(s => new SeatViewModel
+            return stage;
+        }
+
+        public StageServiceModel StageDetails(
+            int stageId,
+            string name,
+            int selectedSeatId = 0,
+            string selectedSeats = null,
+            int currentPage = 1)
+        {
+            var seatsQuery = GetSeats(stageId, currentPage);
+
+            var selectedSeatsList = GetSelectedSeats(selectedSeats, selectedSeatId);
+
+            var stage = new StageServiceModel
             {
-                Id = s.Id,
-                Number = s.Number,
-                Row = s.Row,
-                IsSelected = selectedSeatsList.Contains(s.Id) ? true : false
-            })
-            .ToList();
+                Id = stageId,
+                Name = name,
+                CurrentPage = currentPage
+            };
 
-            input.SelectedSeatId = 0;
+            stage.Seats = seatsQuery
+                .Select(s => new SeatServiceModel
+                {
+                    Id = s.Id,
+                    Number = s.Number,
+                    Price = s.SeatCategory.Price,
+                    IsSelected = selectedSeatsList.Contains(s.Id) ? true : false,
+                    Row = s.Row
+                })
+                .ToList();
 
-            return input;
+            stage.SelectedSeats = string.Join(" ", selectedSeatsList);
+
+            stage.Rows = GetRows(seatsQuery);
+
+            return stage;
         }
 
         //Users --
@@ -151,6 +127,8 @@ namespace TheatreWebApp.Services.Seats
             return bookingChart;
         }
 
+        //Common --
+
         private IQueryable<Seat> PrepareSeatsQuery(int showId, int currentPage = 1)
         {
             var stageId = data.Shows
@@ -158,30 +136,7 @@ namespace TheatreWebApp.Services.Seats
                .Select(s => s.StageId)
                .FirstOrDefault();
 
-            var seatsQuery = data.Seats
-                .Where(s => s.StageId == stageId)
-                .Select(s => s)
-                .OrderBy(s => s.Row)
-                .ThenBy(s => s.Number)
-                .AsQueryable();
-
-            if (stageId == 2)
-            {
-                currentPage = 1;
-            }
-
-            if (currentPage == 1)
-            {
-                seatsQuery = seatsQuery.Take(300);
-            }
-            else if (currentPage == 2)
-            {
-                seatsQuery = seatsQuery.Skip(300).Take(150);
-            }
-            else if (currentPage == 3)
-            {
-                seatsQuery = seatsQuery.Skip(450).Take(100);
-            }
+            var seatsQuery = GetSeats(stageId, currentPage);
 
             return seatsQuery;
         }
@@ -274,5 +229,37 @@ namespace TheatreWebApp.Services.Seats
                 return seats;
             }
         }
+
+
+        private IQueryable<Seat> GetSeats(int stageId, int currentPage)
+        {
+            var seatsQuery = data.Seats
+                .Where(s => s.StageId == stageId)
+                .Select(s => s)
+                .OrderBy(s => s.Row)
+                .ThenBy(s => s.Number)
+                .AsQueryable();
+
+            if (stageId == 2)
+            {
+                currentPage = 1;
+            }
+
+            if (currentPage == 1)
+            {
+                seatsQuery = seatsQuery.Take(300);
+            }
+            else if (currentPage == 2)
+            {
+                seatsQuery = seatsQuery.Skip(300).Take(150);
+            }
+            else if (currentPage == 3)
+            {
+                seatsQuery = seatsQuery.Skip(450).Take(100);
+            }
+
+            return seatsQuery;
+        }
+
     }
 }

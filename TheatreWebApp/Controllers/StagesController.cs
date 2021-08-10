@@ -6,6 +6,7 @@ using TheatreWebApp.Data.Models;
 using TheatreWebApp.Models.Stages;
 using TheatreWebApp.Services.Categories;
 using TheatreWebApp.Services.Seats;
+using TheatreWebApp.Services.Seats.Models;
 
 namespace TheatreWebApp.Controllers
 {
@@ -38,35 +39,17 @@ namespace TheatreWebApp.Controllers
 
         public IActionResult Details(int stageId)
         {
-            var stageQuery = data.Stages
-                .Where(s => s.Id == stageId)
-                .Select(s => new SelectionServiceModel
-                {
-                    Id = stageId,
-                    Name = s.Name,
-                })
-                .FirstOrDefault();
+            var stage = selection.StageDetails(stageId);
 
-            var seatsQuery = selection.PrepareSeatingChart(stageQuery.Id, stageQuery.CurrentPage);
-
-            stageQuery.Seats = seatsQuery
-                .Select(s => new SeatViewModel
-                { 
-                    Id = s.Id,
-                    Number = s.Number,
-                    Row = s.Row
-                 })
-                .ToList();
-
-            return View(stageQuery);
+            return View(stage);
         }
 
         [HttpPost]
-        public IActionResult Details(SelectionServiceModel stageQuery)
+        public IActionResult Details(StageServiceModel stage)
         {
-            stageQuery = selection.GetSelectedSeats(stageQuery);
+            stage = selection.StageDetails(stage.Id, stage.Name, stage.SelectedSeatId, stage.SelectedSeats, stage.CurrentPage);
 
-            return View(stageQuery);
+            return View(stage);
         }
 
         public IActionResult Edit(string selectedSeats)

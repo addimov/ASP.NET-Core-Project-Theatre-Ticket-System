@@ -1,0 +1,165 @@
+﻿<hr />
+<div class="row justify-content-center">
+    <div>Stage</div>
+</div>
+<hr />
+
+@{
+    var rowIndexMax = 0;
+    var rowIndexMin = 0;
+    var rowIndexIncrease = 0;
+}
+
+
+@foreach (var row in Model.Rows)
+{
+    if (row == 1)
+    {
+        rowIndexMax = 20;
+        rowIndexIncrease = 20;
+    }
+    else if (row == 16)
+    {
+        rowIndexMax = 30;
+        rowIndexIncrease = 30;
+    }
+    else if (row == 21)
+    {
+        rowIndexMax = 25;
+        rowIndexIncrease = 25;
+    }
+
+
+    @if (rowIndexMax > Model.Seats.Count)
+    {
+        rowIndexMax = Model.Seats.Count;
+    }
+
+    if (row < 16)
+    {
+        <div class="row justify-content-center">
+
+            <div style="padding: 5px">
+
+                @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                {
+                    <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                }
+
+            </div>
+
+        </div>
+    }
+
+
+    if (row > 15 && row < 21)
+    {
+        <div class="row justify-content-center">
+
+            <div style="padding: 5px">
+
+                @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                {
+                    if (i < rowIndexMin + 10)
+                    {
+                        <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                    }
+                    else if (i > rowIndexMin + 20)
+                    {
+                        <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+
+                }
+
+            </div>
+        </div>
+
+
+        <div class="row justify-content-center">
+
+            <div style="padding: 5px">
+
+                @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                {
+                    if (i < rowIndexMin + 10)
+                    {
+                        <span></span>
+                    }
+                    else if (i > rowIndexMin + 20)
+                    {
+
+                    }
+                    else
+                    {
+                        <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                    }
+
+                }
+
+            </div>
+        </div>
+    }
+
+    if (row > 20)
+    {
+        <div class="row justify-content-center">
+
+            <div style="padding: 5px">
+
+                @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                {
+                    if (i < rowIndexMin + 9)
+                    {
+                        <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                    }
+                    else if (i > rowIndexMin + 18)
+                    {
+                        <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+
+                }
+
+            </div>
+        </div>
+
+
+        <div class="row justify-content-center">
+
+            <div style="padding: 5px">
+
+                @for (int i = rowIndexMin; i < rowIndexMax; i++)
+                {
+                    if (i < rowIndexMin + 9)
+                    {
+                        <span></span>
+                    }
+                    else if (i > rowIndexMin + 18)
+                    {
+
+                    }
+                    else
+                    {
+                        <partial name="_SeatPartial" model="@Model.Seats[i]" />
+                    }
+
+                }
+
+            </div>
+        </div>
+    }
+
+
+
+
+    rowIndexMin = rowIndexMax;
+    rowIndexMax = rowIndexMax + rowIndexIncrease;
+
+}
