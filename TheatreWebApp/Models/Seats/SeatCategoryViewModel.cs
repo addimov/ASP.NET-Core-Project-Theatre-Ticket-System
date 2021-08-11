@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TheatreWebApp.Models.Stages
+namespace TheatreWebApp.Models.Seats
 {
     public class SeatCategoryViewModel
     {
         public string StageName { get; set; }
 
         public string CategoryName { get; set; }
-
-        public int CategoryId { get; set; }
 
         public string Seats { get; set; }
 

@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TheatreWebApp.Models.Stages;
+using TheatreWebApp.Models.Seats;
 using TheatreWebApp.Services.Categories;
 using TheatreWebApp.Services.Seats;
 using TheatreWebApp.Services.Seats.Models;
 
-namespace TheatreWebApp.Controllers
+namespace TheatreWebApp.Areas.Admin.Controllers
 {
-    public class StagesController : Controller
+    public class SeatsController : AdminController
     {
         private readonly ISelectionService selection;
         private readonly ICategoryService category;
 
-        public StagesController(ISelectionService selection, ICategoryService category)
+        public SeatsController(ISelectionService selection, ICategoryService category)
         {
             this.selection = selection;
             this.category = category;
@@ -56,6 +56,5 @@ namespace TheatreWebApp.Controllers
 
             return RedirectToAction("Edit", new { categoryInput.SelectedSeats });
         }
-
     }
 }

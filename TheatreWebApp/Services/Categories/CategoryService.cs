@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
-using TheatreWebApp.Models.Stages;
+using TheatreWebApp.Models.Seats;
 
 namespace TheatreWebApp.Services.Categories
 {

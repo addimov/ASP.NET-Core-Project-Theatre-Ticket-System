@@ -4,6 +4,8 @@ using TheatreWebApp.Models.Plays;
 using TheatreWebApp.Services.Plays;
 using TheatreWebApp.Infrastructure;
 
+using static TheatreWebApp.Areas.Admin.AdminConstants;
+
 namespace TheatreWebApp.Controllers
 {
     public class PlaysController : Controller
@@ -33,14 +35,14 @@ namespace TheatreWebApp.Controllers
             return View(query);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Add()
         {
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Add(PlayFormModel play)
         {
             if (!ModelState.IsValid)
@@ -60,7 +62,7 @@ namespace TheatreWebApp.Controllers
             return View(play);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Hide(int playId)
         {
             this.plays.ChangeVisibility(playId);
@@ -68,7 +70,7 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("Details", new { playId = playId});
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Edit(int playId)
         {
             var play = this.plays.FormDetails(playId);
@@ -77,7 +79,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Edit(PlayFormModel play)
         {
             this.plays.Edit(play);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TheatreWebApp.Services.Categories
+﻿namespace TheatreWebApp.Services.Categories
 {
     public class CategorySeatModel
     {

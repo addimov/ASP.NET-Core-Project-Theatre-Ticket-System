@@ -4,6 +4,8 @@ using TheatreWebApp.Models.Shows;
 using TheatreWebApp.Services.Shows;
 using TheatreWebApp.Infrastructure;
 
+using static TheatreWebApp.Areas.Admin.AdminConstants;
+
 namespace TheatreWebApp.Controllers
 {
     public class ShowsController : Controller
@@ -36,7 +38,7 @@ namespace TheatreWebApp.Controllers
             return View(shows);
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Add()
         {
             var show = this.shows.PrepareForm();
@@ -45,7 +47,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Add(AddShowFormModel show)
         {
             if(!this.shows.PlayExists(show.PlayId))
@@ -79,7 +81,7 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("All");
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Edit(int showId)
         {
             var show = this.shows.PrepareEditForm(showId);
@@ -88,7 +90,7 @@ namespace TheatreWebApp.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = AdminRoleName)]
         public IActionResult Edit(EditShowFormModel showForm)
         {
             this.shows.Edit(showForm);

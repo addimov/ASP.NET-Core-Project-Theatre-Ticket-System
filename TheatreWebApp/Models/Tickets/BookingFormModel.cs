@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TheatreWebApp.Models.Stages;
+using TheatreWebApp.Models.Seats;
 using TheatreWebApp.Services.Seats;
 using TheatreWebApp.Services.Seats.Models;
 
