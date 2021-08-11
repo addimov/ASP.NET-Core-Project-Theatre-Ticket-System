@@ -163,56 +163,33 @@ namespace TheatreWebApp.Services.Shows
             var currentMonth = DateTime.UtcNow.Month.ToString("d2");
             var currentYear = DateTime.UtcNow.Year.ToString("d4");
 
+            var sb = new StringBuilder();
+
             if (query.Length < 3)
-            {
-                var sb = new StringBuilder();
+            {             
                 sb.Append(query);
                 sb.Append("/");
                 sb.Append(currentMonth);
                 sb.Append("/");
-                sb.Append(currentYear);
-
-                var date = sb.ToString();
-
-                var isValid = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showTime);
-
-                if (!isValid)
-                {
-                    return DateTime.UtcNow;
-                }
-
-                return showTime;
+                sb.Append(currentYear);;
             }
             else if (query.Length < 6)
             {
-                var sb = new StringBuilder();
                 sb.Append(query);
                 sb.Append("/");
                 sb.Append(currentYear);
-
-                var date = sb.ToString();
-
-                var isValid = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showTime);
-
-                if (!isValid)
-                {
-                    return DateTime.UtcNow;
-                }
-
-                return showTime;
             }
-            else
+
+            var date = sb.ToString();
+
+            var isValid = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showTime);
+
+            if (!isValid)
             {
-
-                var isValid = DateTime.TryParseExact(query, "dd/MM/yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showTime);
-
-                if (!isValid)
-                {
-                    return DateTime.UtcNow;
-                }
-
-                return showTime;
+                return DateTime.UtcNow;
             }
+
+            return showTime;
         }
 
         private static DateTime GetShowTime(string date, string hour)

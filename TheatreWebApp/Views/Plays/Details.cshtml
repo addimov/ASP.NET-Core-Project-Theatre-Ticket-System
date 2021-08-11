@@ -19,12 +19,9 @@
 
 
             <div class="row d-flex justify-content-center">
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <div style="padding: 5px">
-                        <a class="btn btn-primary" asp-controller="Shows" asp-action="All" asp-route-playId="@Model.Id">Book now</a>
-                    </div>
-                }
+                <div style="padding: 5px">
+                    <a class="btn btn-primary" asp-controller="Shows" asp-action="All" asp-route-playId="@Model.Id">Upcoming shows</a>
+                </div>
                 @if (User.IsAdmin())
                 {
                     <div style="padding: 5px">

@@ -1,34 +1,23 @@
 ﻿using System.Diagnostics;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Data;
 using TheatreWebApp.Models;
-using TheatreWebApp.Models.Home;
+using TheatreWebApp.Services.Plays;
 
 namespace TheatreWebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly TheatreDbContext data;
+        private readonly IPlayService plays;
 
-        public HomeController(TheatreDbContext data)
+        public HomeController(TheatreDbContext data, IPlayService plays)
         {
-            this.data = data;
+            this.plays = plays;
         }
 
         public IActionResult Index()
         {
-            var plays = data.Plays
-                .Select(p => new IndexPlayViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    ShortDescription = p.ShortDescription,
-                    ImageUrl = p.ImageUrl
-                })
-                .OrderByDescending(p => p.Id)
-                .Take(3)
-                .ToList();
+            var plays = this.plays.Latest();
 
             return View(plays);
         }

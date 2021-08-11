@@ -13,6 +13,7 @@ using TheatreWebApp.Services.Categories;
 using TheatreWebApp.Services.Plays;
 using TheatreWebApp.Services.Seats;
 using TheatreWebApp.Services.Shows;
+using TheatreWebApp.Services.Tickets;
 
 namespace TheatreWebApp
 {
@@ -56,6 +57,7 @@ namespace TheatreWebApp
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IPlayService, PlayService>();
             services.AddTransient<IShowService, ShowService>();
+            services.AddTransient<ITicketService, TicketService>();
         }
 
 

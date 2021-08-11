@@ -78,10 +78,7 @@
                 <td>@show.StageName</td>
                 <td><b>@show.Time</b></td>
                 <td>
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <a class="btn btn-primary" asp-controller="Tickets" asp-action="SelectSeats" asp-route-showId="@show.Id">Book now</a>
-                    }
+                    <a class="btn btn-primary" asp-controller="Tickets" asp-action="SelectSeats" asp-route-showId="@show.Id">Book now</a>
 
                     <a class="btn btn-primary" asp-controller="Plays" asp-action="Details" asp-route-playId="@show.PlayId">Details</a>
 

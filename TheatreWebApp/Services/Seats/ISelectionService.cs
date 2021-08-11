@@ -24,5 +24,7 @@ namespace TheatreWebApp.Services.Seats
             string selectedSeats = null,
             int currentPage = 1
             );
+
+        IEnumerable<StageListServiceModel> All();
     }
 }

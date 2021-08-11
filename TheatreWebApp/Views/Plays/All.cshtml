@@ -46,10 +46,7 @@
                     <p class="card-text">@play.ShortDescription</p>
                     <a class="btn btn-primary" asp-controller="Plays" asp-action="Details" asp-route-playId="@play.Id">Details</a>
 
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <a class="btn btn-primary" asp-controller="Shows" asp-action="All" asp-route-playId="@play.Id">Book now</a>
-                    }
+                    <a class="btn btn-primary" asp-controller="Shows" asp-action="All" asp-route-playId="@play.Id">Upcoming shows</a>
 
                     @if (User.IsAdmin())
                     {

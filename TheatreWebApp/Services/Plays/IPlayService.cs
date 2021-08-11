@@ -1,4 +1,5 @@
-﻿using TheatreWebApp.Models.Plays;
+﻿using System.Collections.Generic;
+using TheatreWebApp.Models.Plays;
 using TheatreWebApp.Services.Plays.Models;
 
 namespace TheatreWebApp.Services.Plays
@@ -26,6 +27,7 @@ namespace TheatreWebApp.Services.Plays
         PlayFormModel FormDetails(int playId);
 
         void Edit(PlayFormModel play);
-        
+
+        IEnumerable<PlayServiceModel> Latest();      
     }
 }

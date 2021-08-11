@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TheatreWebApp.Models.Stages
+namespace TheatreWebApp.Services.Seats.Models
 {
-    public class StageListViewModel
+    public class StageListServiceModel
     {
         public int Id { get; set; }
 

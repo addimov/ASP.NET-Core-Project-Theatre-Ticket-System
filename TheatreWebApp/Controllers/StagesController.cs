@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using TheatreWebApp.Data;
-using TheatreWebApp.Data.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Models.Stages;
 using TheatreWebApp.Services.Categories;
 using TheatreWebApp.Services.Seats;
@@ -12,34 +8,25 @@ namespace TheatreWebApp.Controllers
 {
     public class StagesController : Controller
     {
-        private readonly TheatreDbContext data;
         private readonly ISelectionService selection;
         private readonly ICategoryService category;
 
-        public StagesController(TheatreDbContext data, ISelectionService selection, ICategoryService category)
+        public StagesController(ISelectionService selection, ICategoryService category)
         {
-            this.data = data;
             this.selection = selection;
             this.category = category;
         }
 
         public IActionResult All()
         {
-            var stages = data.Stages
-                .Select(s => new StageListViewModel
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    SeatCount = s.Seats.Count()
-                })
-                .ToList();
+            var stages = this.selection.All();
 
             return View(stages);
         }
 
         public IActionResult Details(int stageId)
         {
-            var stage = selection.StageDetails(stageId);
+            var stage = this.selection.StageDetails(stageId);
 
             return View(stage);
         }
@@ -47,16 +34,16 @@ namespace TheatreWebApp.Controllers
         [HttpPost]
         public IActionResult Details(StageServiceModel stage)
         {
-            stage = selection.StageDetails(stage.Id, stage.Name, stage.SelectedSeatId, stage.SelectedSeats, stage.CurrentPage);
+            stage = this.selection.StageDetails(stage.Id, stage.Name, stage.SelectedSeatId, stage.SelectedSeats, stage.CurrentPage);
 
             return View(stage);
         }
 
         public IActionResult Edit(string selectedSeats)
         {
-            var categoryDataModel = category.GetViewData(selectedSeats);
+            var categoryDataModel = this.category.GetViewData(selectedSeats);
 
-            var categoryForm = category.GetFormModel(categoryDataModel);
+            var categoryForm = this.category.GetFormModel(categoryDataModel);
 
             return View(categoryForm);
         }
@@ -65,7 +52,7 @@ namespace TheatreWebApp.Controllers
         public IActionResult Edit(CategoryFormModel categoryInput)
         {
 
-            category.EditCategory(categoryInput);
+            this.category.EditCategory(categoryInput);
 
             return RedirectToAction("Edit", new { categoryInput.SelectedSeats });
         }

@@ -1,45 +1,27 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TheatreWebApp.Data;
-using TheatreWebApp.Data.Models;
 using TheatreWebApp.Infrastructure;
 using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Seats;
+using TheatreWebApp.Services.Tickets;
 
 namespace TheatreWebApp.Controllers
 {
     public class TicketsController : Controller
     {
-        private readonly TheatreDbContext data;
         private readonly ISelectionService selection;
+        private readonly ITicketService tickets;
 
-        public TicketsController(TheatreDbContext data, ISelectionService selection)
+        public TicketsController(ISelectionService selection, ITicketService tickets)
         {
-            this.data = data;
             this.selection = selection;
+            this.tickets = tickets;
         }
 
         [Authorize]
         public IActionResult All()
         {
-            var tickets = data.Tickets
-                .Where(t => t.UserId == this.User.Id())
-                .Select(t => new TicketViewModel
-                {
-                    ShowId = t.Show.Id,
-                    TicketId = t.Id,
-                    PlayName = t.Show.Play.Name,
-                    StageName = t.Show.Stage.Name,
-                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time),
-                    Status = t.ReservationStatus.Name,
-                    TotalPrice = t.Reservations.Select(r => r.Price).Sum().GetValueOrDefault(),
-                    SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
-                    CreatedOn = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.CreatedOn)
-                })
-                .ToList();
+            var tickets = this.tickets.AllByUser(this.User.Id());
 
             return View(tickets);
         }
@@ -62,80 +44,24 @@ namespace TheatreWebApp.Controllers
         [Authorize]
         public IActionResult Review(int showId, string selectedSeats)
         {
-            var ticket = new Ticket
+            var reservations = this.tickets.ReserveSeats(showId, selectedSeats);
+            
+            if(reservations == null)
             {
-                ShowId = showId,
-                ReservationStatusId = data.ReservationStatuses.Where(s => s.Name == "Unconfirmed").Select(s => s.Id).FirstOrDefault(),
-                UserId = this.User.Id()
-            };
-
-            var reservations = new List<Reservation>();
-
-            var selectedSeatsList = selectedSeats.Split().Select(int.Parse).ToList();
-
-            foreach (var seatId in selectedSeatsList)
-            {
-                var seatIsTaken = data.Reservations.Where(r => r.ShowId == showId && r.SeatId == seatId).Any();
-
-                if (seatIsTaken)
-                {
-                    //add tempdata error message
-                    return View("SelectSeats", new { showId = showId});
-                }
-                reservations.Add(new Reservation
-                {
-                    SeatId = seatId,
-                    ShowId = showId,
-                    Price = data.Seats.Select(s => s.SeatCategory).Select(c => c.Price).FirstOrDefault()
-                });
+                //add tempdata error message
+                return View("SelectSeats", new { showId = showId });
             }
 
-            ticket.Reservations = reservations;
-
-            data.Tickets.Add(ticket);
-            data.SaveChanges();
-
-            var ticketView = data.Tickets
-                .Where(t => t.Id == ticket.Id)
-                .Select(t => new TicketViewModel
-                {
-                    ShowId = t.Show.Id,
-                    TicketId = t.Id,
-                    PlayName = t.Show.Play.Name,
-                    StageName = t.Show.Stage.Name,
-                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time),
-                    SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
-                    TotalPrice = t.Reservations.Select(r => r.Price).Sum().GetValueOrDefault()
-                })
-                .FirstOrDefault();
-
-            return View(ticketView);
+            var tickedId = this.tickets.Create(showId, reservations, this.User.Id());
+           
+            return View(this.tickets.Review(tickedId));
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult Review(TicketFormModel ticketForm)
         {
-            var ticket = data.Tickets
-                .Where(t => t.Id == ticketForm.TicketId)
-                .Select(t => t)
-                .FirstOrDefault();
-
-            if(ticketForm.Action == 1)
-            {
-                var reservations = data.Reservations.Where(r => r.TicketId == ticketForm.TicketId).Select(r => r).ToList();
-
-                data.Reservations.RemoveRange(reservations);
-
-                data.Tickets.Remove(ticket);
-            }
-            if(ticketForm.Action == 2)
-            {
-                ticket.ReservationStatusId = data.ReservationStatuses.Where(r => r.Name == "Paid").Select(r => r.Id).FirstOrDefault();
-                data.Tickets.Update(ticket);
-            }
-
-            data.SaveChanges();
+            this.tickets.Confirm(ticketForm.TicketId, ticketForm.Action);
 
             return RedirectToAction("All");
         }

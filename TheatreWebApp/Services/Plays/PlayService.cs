@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Models.Plays;
-using TheatreWebApp.Services.Plays;
 using TheatreWebApp.Services.Plays.Models;
 
 namespace TheatreWebApp.Services.Plays
@@ -174,6 +171,23 @@ namespace TheatreWebApp.Services.Plays
 
             data.Plays.Update(play);
             data.SaveChanges();
+        }
+
+        public IEnumerable<PlayServiceModel> Latest()
+        {
+            var plays = data.Plays
+                .Select(p => new PlayServiceModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    ShortDescription = p.ShortDescription,
+                    ImageUrl = p.ImageUrl
+                })
+                .OrderByDescending(p => p.Id)
+                .Take(3)
+                .ToList();
+
+            return plays;
         }
     }
 }

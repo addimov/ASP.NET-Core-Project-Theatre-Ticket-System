@@ -19,6 +19,21 @@ namespace TheatreWebApp.Services.Seats
 
         //Stages --
 
+
+        public IEnumerable<StageListServiceModel> All()
+        {
+            var stages = data.Stages
+                .Select(s => new StageListServiceModel
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    SeatCount = s.Seats.Count()
+                })
+                .ToList();
+
+            return stages;
+        }
+
         public StageServiceModel StageDetails(int stageId, int currentPage = 1)
         {
             var stage = data.Stages
