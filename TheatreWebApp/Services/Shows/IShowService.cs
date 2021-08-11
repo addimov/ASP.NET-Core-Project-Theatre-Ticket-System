@@ -15,7 +15,8 @@ namespace TheatreWebApp.Services.Shows
             string afterDate = null,
             string beforeDate = null,
             int currentPage = 1,
-            int showsPerPage = int.MaxValue
+            int showsPerPage = int.MaxValue,
+            bool showOlder = false
             );
 
         AddShowFormModel PrepareForm();
@@ -34,5 +35,9 @@ namespace TheatreWebApp.Services.Shows
         bool PlayExists(int playId);
 
         bool StageExists(int stageId);
+
+        bool IsDateValid(string date);
+
+        bool IsShowAvailable(int showId);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Infrastructure;
 using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Seats;
+using TheatreWebApp.Services.Shows;
 using TheatreWebApp.Services.Tickets;
 
 namespace TheatreWebApp.Controllers
@@ -11,11 +12,13 @@ namespace TheatreWebApp.Controllers
     {
         private readonly ISelectionService selection;
         private readonly ITicketService tickets;
+        private readonly IShowService shows;
 
-        public TicketsController(ISelectionService selection, ITicketService tickets)
+        public TicketsController(ISelectionService selection, ITicketService tickets, IShowService shows)
         {
             this.selection = selection;
             this.tickets = tickets;
+            this.shows = shows;
         }
 
         [Authorize]
@@ -29,6 +32,10 @@ namespace TheatreWebApp.Controllers
         [Authorize]
         public IActionResult SelectSeats(int showId)
         {
+            if (!this.shows.IsShowAvailable(showId))
+            {
+                return BadRequest();
+            }
 
             return View(selection.GetSeatingChart(showId));
         }
@@ -37,7 +44,6 @@ namespace TheatreWebApp.Controllers
         [Authorize]
         public IActionResult SelectSeats(BookingFormModel bookingChart)
         {
-
             return View(selection.GetSeatingChart(bookingChart));
         }
 

@@ -16,8 +16,6 @@ namespace TheatreWebApp.Models.Plays
 
         public int TotalPlays { get; set; }
 
-        public bool ShowHidden { get; set; } = false;
-
         public IEnumerable<PlayServiceModel> Plays { get; set; }
     }
 }

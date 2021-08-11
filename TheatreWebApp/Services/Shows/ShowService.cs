@@ -42,9 +42,20 @@ namespace TheatreWebApp.Services.Shows
             string afterDate = null, 
             string beforeDate = null, 
             int currentPage = 1,
-            int showsPerPage = int.MaxValue)
+            int showsPerPage = int.MaxValue,
+            bool showOlder = false)
         {
-            var showQuery = data.Shows.OrderByDescending(s => s.Time).AsQueryable();
+            
+
+            var showQuery = data.Shows
+                .OrderByDescending(s => s.Time)
+                .AsQueryable();
+            
+            if(showOlder == false)
+            {
+                showQuery = showQuery.Where(s => s.Time > DateTime.Today.AddDays(-1)).AsQueryable();
+            }
+
 
             if (playId != 0)
             {
@@ -81,7 +92,8 @@ namespace TheatreWebApp.Services.Shows
                     PlayId = s.Play.Id,
                     StageName = s.Stage.Name,
                     ImageUrl = s.Play.ImageUrl,
-                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time)
+                    Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time),
+                    IsAvailable = s.Time > DateTime.UtcNow
                 })
                 .ToList();
 
@@ -109,6 +121,23 @@ namespace TheatreWebApp.Services.Shows
             };
 
             return showsModel;
+        }
+
+        public bool IsDateValid(string date)
+        {
+            var isValid = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showDate);
+
+            if (!isValid)
+            {
+                return false;
+            }
+
+            if(showDate < DateTime.Today)
+            {
+                return false;
+            }
+
+            return isValid;
         }
 
         public AddShowFormModel PrepareForm()
@@ -192,6 +221,22 @@ namespace TheatreWebApp.Services.Shows
             return showTime;
         }
 
+
+        public bool IsShowAvailable(int showId)
+        {
+            var showTime = data.Shows
+                .Where(s => s.Id == showId)
+                .Select(s => s.Time)
+                .FirstOrDefault();
+
+            if(showTime > DateTime.Today.AddDays(-1))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private static DateTime GetShowTime(string date, string hour)
         {
             var timeString = date + " " + hour;
@@ -205,7 +250,6 @@ namespace TheatreWebApp.Services.Shows
 
             return showTime;
         }
-
 
     }
 }

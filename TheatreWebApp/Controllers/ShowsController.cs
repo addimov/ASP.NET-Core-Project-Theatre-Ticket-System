@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Models.Shows;
 using TheatreWebApp.Services.Shows;
+using TheatreWebApp.Infrastructure;
 
 namespace TheatreWebApp.Controllers
 {
@@ -16,13 +17,21 @@ namespace TheatreWebApp.Controllers
 
         public IActionResult All([FromQuery]ShowQueryModel showQuery)
         {
+            var showOlder = false;
+
+            if (this.User.IsAdmin())
+            {
+                showOlder = true;
+            }
+
             var shows = this.shows.All(
                 showQuery.PlayId, 
                 showQuery.SearchTerm, 
                 showQuery.AfterDate, 
                 showQuery.BeforeDate, 
                 showQuery.CurrentPage, 
-                ShowQueryModel.ShowsPerPage);
+                ShowQueryModel.ShowsPerPage,
+                showOlder);
 
             return View(shows);
         }
@@ -47,6 +56,11 @@ namespace TheatreWebApp.Controllers
             if (!this.shows.StageExists(show.StageId))
             {
                 this.ModelState.AddModelError(nameof(show.StageId), "Stage does not exist.");
+            }
+
+            if (!this.shows.IsDateValid(show.Date))
+            {
+                this.ModelState.AddModelError(nameof(show.StageId), "Date is not valid. Dates must be in the specified format (dd/MM/yyyy) and no earlier than the present moment.");
             }
 
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Models.Plays;
 using TheatreWebApp.Services.Plays;
+using TheatreWebApp.Infrastructure;
 
 namespace TheatreWebApp.Controllers
 {
@@ -16,7 +17,13 @@ namespace TheatreWebApp.Controllers
 
         public IActionResult All([FromQuery] PlayQueryModel query)
         {
-            var playsResult = plays.All(query.SearchTerm, query.CurrentPage, query.ShowHidden, PlayQueryModel.PlaysPerPage);
+            var showHidden = false;
+
+            if (this.User.IsAdmin())
+            {
+                showHidden = true;
+            }
+            var playsResult = plays.All(query.SearchTerm, query.CurrentPage, showHidden, PlayQueryModel.PlaysPerPage);
 
             query.TotalPlays = playsResult.TotalPlays;
             query.SearchTerm = playsResult.SearchTerm;

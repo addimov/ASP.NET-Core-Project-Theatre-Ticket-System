@@ -18,5 +18,7 @@ namespace TheatreWebApp.Services.Shows.Models
         public string ImageUrl { get; set; }
 
         public string Time { get; set; }
+
+        public bool IsAvailable { get; set; }
     }
 }
