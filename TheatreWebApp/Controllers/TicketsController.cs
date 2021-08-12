@@ -78,5 +78,22 @@ namespace TheatreWebApp.Controllers
             return RedirectToAction("All");
         }
 
+        [Authorize]
+        public IActionResult Print(string ticketId)
+        {
+            var userId = this.User.Id();
+
+            var isUserAuthorized = this.tickets.Authorize(userId, ticketId);
+
+            if (!isUserAuthorized)
+            {
+                return Unauthorized();
+            }
+
+            var order = this.tickets.ToPrint(ticketId);
+
+            return View(order);
+        }
+
     }
 }

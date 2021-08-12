@@ -15,7 +15,7 @@ namespace TheatreWebApp.Data.Models
 
         public Seat Seat { get; set; }
 
-        public decimal? Price { get; init; }
+        public decimal Price { get; init; }
 
         public string TicketId { get; set; }
 

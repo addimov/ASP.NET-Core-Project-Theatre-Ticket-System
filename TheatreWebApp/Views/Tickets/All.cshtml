@@ -49,7 +49,7 @@
                 }
                 else if (ticket.Status == "Paid")
                 {
-                    <a href="#" class="card-link">Print tickets</a>
+                    <a asp-controller="Tickets" asp-action="Print" asp-route-ticketId="@ticket.TicketId">Print tickets</a>
                 }
             </div>
         </div>

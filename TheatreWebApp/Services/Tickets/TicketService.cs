@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
+using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Tickets.Model;
 
 namespace TheatreWebApp.Services.Tickets
@@ -42,13 +43,25 @@ namespace TheatreWebApp.Services.Tickets
                     StageName = t.Show.Stage.Name,
                     Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time),
                     Status = t.ReservationStatus.Name,
-                    TotalPrice = t.Reservations.Select(r => r.Price).Sum().GetValueOrDefault(),
+                    TotalPrice = t.Reservations.Select(r => r.Price).Sum(),
                     SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
                     CreatedOn = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.CreatedOn)
                 })
                 .ToList();
 
             return tickets;
+        }
+
+        public bool Authorize(string userId, string ticketId)
+        {
+            var user = data.Tickets.Where(t => t.Id == ticketId).Select(t => t.UserId).FirstOrDefault();
+
+            if(userId != user)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void Confirm(string ticketId, int action)
@@ -92,6 +105,34 @@ namespace TheatreWebApp.Services.Tickets
             return ticket.Id;
         }
 
+        public IEnumerable<TicketViewModel> ToPrint(string ticketId)
+        {
+            var play = data.Tickets.Where(t => t.Id == ticketId).Select(t => t.Show.Play.Name).FirstOrDefault();
+
+            var stage = data.Tickets.Where(t => t.Id == ticketId).Select(t => t.Show.Stage.Name).FirstOrDefault();
+
+            var time = data.Tickets.Where(t => t.Id == ticketId).Select(t => t.Show.Time).FirstOrDefault();
+
+            var timeStr = string.Format(CultureInfo.InvariantCulture, "{0:f}", time);
+
+            var tickets = data.Reservations
+                .Where(r => r.TicketId == ticketId)
+                .Select(r => new TicketViewModel
+                {
+                    TicketId = ticketId,
+                    PlayName = play,
+                    StageName = stage,
+                    Time = timeStr,
+                    SeatNumber = r.Seat.Number,
+                    Row = r.Seat.Row,
+                    Price = r.Price
+                })
+                .OrderBy(r => r.SeatNumber)
+                .ToList();
+
+            return tickets;
+        }
+
         public IEnumerable<Reservation> ReserveSeats(int showId, string selectedSeats)
         {
             var reservations = new List<Reservation>();
@@ -130,7 +171,7 @@ namespace TheatreWebApp.Services.Tickets
                     StageName = t.Show.Stage.Name,
                     Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time),
                     SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
-                    TotalPrice = t.Reservations.Select(r => r.Price).Sum().GetValueOrDefault()
+                    TotalPrice = t.Reservations.Select(r => r.Price).Sum()
                 })
                 .FirstOrDefault();
 

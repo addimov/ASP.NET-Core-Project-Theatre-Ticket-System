@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TheatreWebApp.Data.Models;
+using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Tickets.Model;
 
 namespace TheatreWebApp.Services.Tickets
@@ -20,5 +21,9 @@ namespace TheatreWebApp.Services.Tickets
         TicketServiceModel Review(string ticketId);
 
         void Confirm(string ticketId, int action);
+
+        bool Authorize(string userId, string ticketId);
+
+        IEnumerable<TicketViewModel> ToPrint(string ticketId);
     }
 }

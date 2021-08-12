@@ -1,0 +1,26 @@
+﻿@using TheatreWebApp.Models.Tickets
+
+@model IEnumerable<TicketViewModel>
+
+@{
+    ViewData["Title"] = "Review order";
+}
+@{ 
+    var idCount = 0;
+}
+
+<div class="offset-md-2 col-md-8">
+    @foreach (var ticket in Model)
+    {
+        <div class="card w-100 mb-1">
+            <div class="card-body">
+                <h5 class="card-title">@ticket.PlayName</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@ticket.StageName</h6>
+                <p class="card-text">@ticket.Time</p>
+                <p class="card-text">Seat: @ticket.SeatNumber -- Row: @ticket.Row</p>
+                <p class="card-text">Price: @ticket.Price</p>
+                <p class="card-text">@(ticket.TicketId + "_" + idCount++)</p>
+            </div>
+        </div>
+    }
+</div>
