@@ -93,7 +93,7 @@ namespace TheatreWebApp.Services.Shows
                     StageName = s.Stage.Name,
                     ImageUrl = s.Play.ImageUrl,
                     Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time),
-                    IsAvailable = s.Time > DateTime.UtcNow
+                    IsAvailable = s.Time > DateTime.UtcNow.AddHours(3)
                 })
                 .ToList();
 

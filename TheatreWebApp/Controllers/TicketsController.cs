@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TheatreWebApp.Infrastructure;
 using TheatreWebApp.Models.Tickets;
@@ -22,11 +23,16 @@ namespace TheatreWebApp.Controllers
         }
 
         [Authorize]
-        public IActionResult All()
+        public IActionResult All([FromQuery]TicketQueryModel query)
         {
-            var tickets = this.tickets.AllByUser(this.User.Id());
+            var tickets = this.tickets
+                .AllByUser(this.User.Id(), query.CurrentPage, TicketQueryModel.TicketsPerPage, query.ShowAll)
+                .ToList();
 
-            return View(tickets);
+            query.Tickets = tickets;
+            query.TotalTickets = tickets.Count();
+
+            return View(query);
         }
 
         [Authorize]

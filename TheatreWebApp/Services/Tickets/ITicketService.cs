@@ -6,7 +6,12 @@ namespace TheatreWebApp.Services.Tickets
 {
     public interface ITicketService
     {
-        IEnumerable<TicketServiceModel> AllByUser(string userId);
+        IEnumerable<TicketServiceModel> AllByUser(
+            string userId, 
+            int currentPage = 1, 
+            int ticketsPerPage = int.MaxValue,
+            bool showAll = false
+            );
 
         IEnumerable<Reservation> ReserveSeats(int showId, string selectedSeats);
 

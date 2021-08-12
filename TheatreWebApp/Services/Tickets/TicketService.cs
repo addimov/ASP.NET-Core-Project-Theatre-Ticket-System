@@ -18,10 +18,22 @@ namespace TheatreWebApp.Services.Tickets
             this.data = data;
         }
 
-        public IEnumerable<TicketServiceModel> AllByUser(string userId)
+        public IEnumerable<TicketServiceModel> AllByUser(
+            string userId, 
+            int currentPage = 1, 
+            int ticketsPerPage = int.MaxValue,
+            bool showAll = false)
         {
-            var tickets = data.Tickets
+            var ticketsQuery = data.Tickets
                 .Where(t => t.UserId == userId)
+                .OrderBy(t => t.Show.Time)
+                .AsQueryable();
+
+            ticketsQuery = ticketsQuery 
+                .Skip((currentPage - 1) * ticketsPerPage)
+                .Take(ticketsPerPage);
+
+            var tickets = ticketsQuery
                 .Select(t => new TicketServiceModel
                 {
                     ShowId = t.Show.Id,

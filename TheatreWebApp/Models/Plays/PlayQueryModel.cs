@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TheatreWebApp.Services.Plays.Models;
 
 namespace TheatreWebApp.Models.Plays
 {
     public class PlayQueryModel
     {
-        public const int PlaysPerPage = 3;
+        public const int PlaysPerPage = 6;
 
         public string SearchTerm { get; set; }
 
