@@ -5,6 +5,8 @@ using TheatreWebApp.Data.Models;
 using TheatreWebApp.Models.Plays;
 using TheatreWebApp.Services.Plays.Models;
 
+using static TheatreWebApp.Data.DataConstants;
+
 namespace TheatreWebApp.Services.Plays
 {
     public class PlayService : IPlayService
@@ -34,7 +36,7 @@ namespace TheatreWebApp.Services.Plays
 
             if (imageUrl == null)
             {
-                play.ImageUrl = "https://inventionland.com/wp-content/uploads/2018/04/theater-stage.jpg";
+                play.ImageUrl = DataConstants.Plays.DefaultImageUrl;
             }
 
 

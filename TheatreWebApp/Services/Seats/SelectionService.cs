@@ -19,7 +19,6 @@ namespace TheatreWebApp.Services.Seats
 
         //Stages --
 
-
         public IEnumerable<StageListServiceModel> All()
         {
             var stages = data.Stages
