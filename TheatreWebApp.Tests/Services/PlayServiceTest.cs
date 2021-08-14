@@ -13,7 +13,7 @@ namespace TheatreWebApp.Tests.Services
         public void AllShouldReturnAllVisiblePlaysOrderedByHighestId()
         {
             //Arrange
-            var data = GetPlaysData();
+            var data = DatabaseMock.Instance.GetPlaysData();
 
             var playService = new PlayService(data);
 
@@ -23,9 +23,9 @@ namespace TheatreWebApp.Tests.Services
 
             //Assert
             Assert.NotNull(plays);
-            Assert.Equal(2, plays.Count);
-            Assert.Equal("Test2", plays[0].Name);
-            Assert.Equal(3, plays[0].Id);
+            Assert.Equal(6, plays.Count);
+            Assert.Equal("Play Seven", plays[0].Name);
+            Assert.Equal("Play Two", plays[5].Name);
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace TheatreWebApp.Tests.Services
         public void AllShouldReturnAllPlaysOrderedByHighestId()
         {
             //Arrange
-            var data = GetPlaysData();
+            var data = DatabaseMock.Instance.GetPlaysData();
 
             var playService = new PlayService(data);
 
@@ -43,48 +43,9 @@ namespace TheatreWebApp.Tests.Services
 
             //Assert
             Assert.NotNull(plays);
-            Assert.Equal(3, plays.Count);
-            Assert.Equal("TestHidden", plays[2].Name);
+            Assert.Equal(7, plays.Count);
+            Assert.Equal("Play Seven", plays[0].Name);
+            Assert.Equal("Play Hidden", plays[6].Name);
         }
-
-
-        private static TheatreDbContext GetPlaysData()
-        {
-            var data = DatabaseMock.Instance;
-
-            data.Plays.Add(new Play
-            {
-                Id = 1,
-                Name = "TestHidden",
-                ShortDescription = "ShortText",
-                Description = "LongText",
-                Credits = "Credits",
-                ImageUrl = "Url",
-                IsHidden = true
-            });
-            data.Plays.Add(new Play
-            {
-                Id = 2,
-                Name = "Test1",
-                ShortDescription = "ShortText",
-                Description = "LongText",
-                Credits = "Credits",
-                ImageUrl = "Url",
-            });
-            data.Plays.Add(new Play
-            {
-                Id = 3,
-                Name = "Test2",
-                ShortDescription = "ShortText",
-                Description = "LongText",
-                Credits = "Credits",
-                ImageUrl = "Url",
-                IsHidden = false
-            });
-            data.SaveChanges();
-
-            return data;
-        }
-
     }
 }

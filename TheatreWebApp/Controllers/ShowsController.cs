@@ -62,7 +62,7 @@ namespace TheatreWebApp.Controllers
 
             if (!this.shows.IsDateValid(show.Date))
             {
-                this.ModelState.AddModelError(nameof(show.StageId), "Date is not valid. Dates must be in the specified format (dd/MM/yyyy) and no earlier than the present moment.");
+                this.ModelState.AddModelError(nameof(show.StageId), "Date is not valid. Dates must be in the specified format (dd/MM/yyyy) and no earlier than the present day.");
             }
 
 

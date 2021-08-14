@@ -48,7 +48,7 @@ namespace TheatreWebApp.Services.Shows
             
 
             var showQuery = data.Shows
-                .OrderByDescending(s => s.Time)
+                .OrderBy(s => s.Time)
                 .AsQueryable();
             
             if(showOlder == false)
@@ -193,6 +193,7 @@ namespace TheatreWebApp.Services.Shows
             var currentYear = DateTime.UtcNow.Year.ToString("d4");
 
             var sb = new StringBuilder();
+            string date = null;
 
             if (query.Length < 3)
             {             
@@ -208,8 +209,15 @@ namespace TheatreWebApp.Services.Shows
                 sb.Append("/");
                 sb.Append(currentYear);
             }
+            else
+            {
+                date = query;
+            }
 
-            var date = sb.ToString();
+            if(date == null)
+            {
+                date = sb.ToString();
+            }
 
             var isValid = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var showTime);
 
