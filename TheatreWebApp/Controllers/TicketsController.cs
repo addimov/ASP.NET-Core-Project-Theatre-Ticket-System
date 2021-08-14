@@ -7,6 +7,8 @@ using TheatreWebApp.Services.Seats;
 using TheatreWebApp.Services.Shows;
 using TheatreWebApp.Services.Tickets;
 
+using static TheatreWebApp.WebConstants;
+
 namespace TheatreWebApp.Controllers
 {
     public class TicketsController : Controller
@@ -50,6 +52,13 @@ namespace TheatreWebApp.Controllers
         [Authorize]
         public IActionResult SelectSeats(BookingFormModel bookingChart)
         {
+            if (selection.IsSeatTaken(bookingChart.SelectedSeatId, bookingChart.ShowId))
+            {
+                this.TempData[GlobalMessageKey] = "Selected seat has already been booked. Please choose another.";
+
+                return RedirectToAction("SelectSeats", new { showId = bookingChart.ShowId });
+            }
+
             return View(selection.GetSeatingChart(bookingChart));
         }
 
@@ -60,8 +69,9 @@ namespace TheatreWebApp.Controllers
             
             if(reservations == null)
             {
-                //add tempdata error message
-                return View("SelectSeats", new { showId = showId });
+                this.TempData[GlobalMessageKey] = "Selected seat has already been booked. Please choose another.";
+
+                return RedirectToAction("SelectSeats", new { showId = showId });
             }
 
             var tickedId = this.tickets.Create(showId, reservations, this.User.Id());

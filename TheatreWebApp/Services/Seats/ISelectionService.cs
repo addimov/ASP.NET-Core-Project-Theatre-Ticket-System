@@ -26,5 +26,7 @@ namespace TheatreWebApp.Services.Seats
             );
 
         IEnumerable<StageListServiceModel> All();
+
+        bool IsSeatTaken(int seatId, int showId);
     }
 }

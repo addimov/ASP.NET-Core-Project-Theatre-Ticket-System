@@ -142,6 +142,18 @@ namespace TheatreWebApp.Services.Seats
             return bookingChart;
         }
 
+        public bool IsSeatTaken(int seatId, int showId)
+        {
+            var takenSeats = GetTakenSeats(showId);
+
+            if (takenSeats.Contains(seatId))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         //Common --
 
         private IQueryable<Seat> PrepareSeatsQuery(int showId, int currentPage = 1)

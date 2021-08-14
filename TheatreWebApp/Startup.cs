@@ -94,6 +94,7 @@ namespace TheatreWebApp
 
                 endpoints.MapRazorPages();
             });
+
         }
     }
 }
