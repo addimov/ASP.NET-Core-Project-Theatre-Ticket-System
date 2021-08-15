@@ -98,7 +98,31 @@ namespace TheatreWebApp.Services.Seats
         }
 
         //Users --
-             
+        /*
+        public BookingFormModel SeatingChart(int showId, int currentPage = 1, int selectedSeat = 0, List<int> selectedSeats = null)
+        {
+            var seatsQuery = PrepareSeatsQuery(showId, currentPage);
+          
+            var bookingChart = data.Shows
+               .Where(s => s.Id == showId)
+               .Select(s => new BookingFormModel
+               {
+                   ShowId = showId,
+                   PlayName = s.Play.Name,
+                   StageName = s.Stage.Name,
+                   Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", s.Time),
+               })
+               .FirstOrDefault();
+
+            bookingChart.SelectedSeats = GetSelectedSeats(selectedSeats, selectedSeat);
+
+            bookingChart.Seats = PrepareBookingChart(bookingChart.SelectedSeats, showId, seatsQuery).ToList();
+
+            bookingChart.Rows = GetRows(seatsQuery);
+
+            return bookingChart;
+        }
+        */
         public BookingFormModel GetSeatingChart(int showId, int currentPage = 1)
         {
             var stageId = data.Shows
@@ -202,6 +226,38 @@ namespace TheatreWebApp.Services.Seats
             return selectedSeatsList;
         }
 
+        private List<int> GetSelectedSeats(List<int> selectedSeats, int selectedSeatId)
+        {
+            if (selectedSeatId != 0)
+            {
+                var selectedSeat = data.Seats
+                .Where(s => s.Id == selectedSeatId)
+                .Select(s => s.Id)
+                .FirstOrDefault();
+
+                if (selectedSeats == null)
+                {
+                    selectedSeats = new List<int>();
+                    selectedSeats.Add(selectedSeat);
+                }
+                else
+                {
+
+                    if (selectedSeats.Contains(selectedSeat))
+                    {
+                        selectedSeats.Remove(selectedSeat);
+                    }
+                    else
+                    {
+                        selectedSeats.Add(selectedSeat);
+                    }
+
+                }
+            }
+
+            return selectedSeats;
+        }
+
         private List<int> GetRows(IQueryable<Seat> seatsQuery)
         {
             var rows = seatsQuery.Select(s => s.Row).Distinct().OrderBy(r => r).ToList();
@@ -286,6 +342,7 @@ namespace TheatreWebApp.Services.Seats
 
             return seatsQuery;
         }
+
 
     }
 }

@@ -15,6 +15,8 @@ namespace TheatreWebApp.Services.Seats
 
         BookingFormModel GetSeatingChart(BookingFormModel bookingChart);
 
+        //BookingFormModel SeatingChart(int showId, int currentPage = 1, int selectedSeat = 0, List<int> SelectedSeats = null);
+
         StageServiceModel StageDetails(int stageId, int currentPage = 1);
 
         StageServiceModel StageDetails(

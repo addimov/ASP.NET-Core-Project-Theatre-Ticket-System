@@ -18,7 +18,7 @@ namespace TheatreWebApp.Tests.Controllers
         public void AllShouldReturnViewWithCorrectModel()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData().GetStagesData().GetShowsData();
+            var data = DatabaseMock.Instance.GetPlays().GetStages().GetShows();
 
             var showService = new ShowService(data);
 
@@ -55,7 +55,7 @@ namespace TheatreWebApp.Tests.Controllers
         public void AllShouldReturnViewWithCorrectModelWhenSearchingByPlay()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData().GetStagesData().GetShowsData();
+            var data = DatabaseMock.Instance.GetPlays().GetStages().GetShows();
 
             var showService = new ShowService(data);
 
@@ -92,7 +92,7 @@ namespace TheatreWebApp.Tests.Controllers
         public void AllShouldReturnViewWithCorrectModelWhenSearchingByTerm()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData().GetStagesData().GetShowsData();
+            var data = DatabaseMock.Instance.GetPlays().GetStages().GetShows();
 
             var showService = new ShowService(data);
 
@@ -130,7 +130,7 @@ namespace TheatreWebApp.Tests.Controllers
         public void AllShouldReturnViewWithCorrectModelWhenSearchingByAfterDate()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData().GetStagesData().GetShowsData();
+            var data = DatabaseMock.Instance.GetPlays().GetStages().GetShows();
 
             var showService = new ShowService(data);
 
@@ -175,7 +175,7 @@ namespace TheatreWebApp.Tests.Controllers
         public void AllShouldReturnViewWithCorrectModelWhenSearchingByBeforeDate()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData().GetStagesData().GetShowsData();
+            var data = DatabaseMock.Instance.GetPlays().GetStages().GetShows();
 
             var showService = new ShowService(data);
 

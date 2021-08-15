@@ -20,7 +20,7 @@ namespace TheatreWebApp.Tests.Controllers
         public void AllShouldReturnViewWithCorrectViewModel()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData();
+            var data = DatabaseMock.Instance.GetPlays();
 
             var playService = new PlayService(data);
 
@@ -52,7 +52,7 @@ namespace TheatreWebApp.Tests.Controllers
         public void AllShouldReturnViewWithCorrectViewModelbySearchTerm()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData();
+            var data = DatabaseMock.Instance.GetPlays();
 
             var playService = new PlayService(data);
 

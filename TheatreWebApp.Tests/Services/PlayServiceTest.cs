@@ -13,7 +13,7 @@ namespace TheatreWebApp.Tests.Services
         public void AllShouldReturnAllVisiblePlaysOrderedByHighestId()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData();
+            var data = DatabaseMock.Instance.GetPlays();
 
             var playService = new PlayService(data);
 
@@ -33,7 +33,7 @@ namespace TheatreWebApp.Tests.Services
         public void AllShouldReturnAllPlaysOrderedByHighestId()
         {
             //Arrange
-            var data = DatabaseMock.Instance.GetPlaysData();
+            var data = DatabaseMock.Instance.GetPlays();
 
             var playService = new PlayService(data);
 
