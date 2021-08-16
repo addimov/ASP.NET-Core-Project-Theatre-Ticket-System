@@ -20,7 +20,7 @@ namespace TheatreWebApp.Services.Tickets
 
         TicketServiceModel Review(string ticketId);
 
-        void Confirm(string ticketId, int action);
+        bool Confirm(string ticketId, int action);
 
         bool Authorize(string userId, string ticketId);
 

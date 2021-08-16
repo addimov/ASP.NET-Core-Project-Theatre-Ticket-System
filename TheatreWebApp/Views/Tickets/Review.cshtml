@@ -28,6 +28,7 @@
 <div class="row">
     <form method="post">
         <input type="hidden" asp-for="TicketId" value="@Model.TicketId">
+        <input type="hidden" asp-for="ShowId" value="@Model.ShowId">
         <button class="btn btn-primary" type="submit" name="Action" value="1">Cancel</button>
         <button class="btn btn-primary" type="submit" name="Action" value="2">Pay now</button>
     </form>

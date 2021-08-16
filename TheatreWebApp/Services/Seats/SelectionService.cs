@@ -268,7 +268,7 @@ namespace TheatreWebApp.Services.Seats
         private List<int?> GetTakenSeats(int showId)
         {
             var takenSeats = data.Reservations
-                .Where(r => r.Ticket.ShowId == showId)
+                .Where(r => r.ShowId == showId)
                 .Select(s => s.SeatId)
                 .ToList();
 

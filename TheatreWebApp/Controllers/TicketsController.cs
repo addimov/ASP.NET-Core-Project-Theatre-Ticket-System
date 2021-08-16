@@ -84,7 +84,12 @@ namespace TheatreWebApp.Controllers
         [Authorize]
         public IActionResult Review(TicketFormModel ticketForm)
         {
-            this.tickets.Confirm(ticketForm.TicketId, ticketForm.Action);
+            var isConfirmed = this.tickets.Confirm(ticketForm.TicketId, ticketForm.Action);
+
+            if(isConfirmed == false)
+            {
+                return RedirectToAction("SelectSeats", new { showId = ticketForm.ShowId });
+            }
 
             return RedirectToAction("All");
         }

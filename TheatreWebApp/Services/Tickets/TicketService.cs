@@ -64,12 +64,14 @@ namespace TheatreWebApp.Services.Tickets
             return true;
         }
 
-        public void Confirm(string ticketId, int action)
+        public bool Confirm(string ticketId, int action)
         {
             var ticket = data.Tickets
                 .Where(t => t.Id == ticketId)
                 .Select(t => t)
                 .FirstOrDefault();
+
+            var isConfirmed = false;
 
             if (action == 1)
             {
@@ -80,12 +82,18 @@ namespace TheatreWebApp.Services.Tickets
                 data.Tickets.Remove(ticket);
             }
             if (action == 2)
-            {
+            {               
                 ticket.ReservationStatusId = data.ReservationStatuses.Where(r => r.Name == "Paid").Select(r => r.Id).FirstOrDefault();
+
                 data.Tickets.Update(ticket);
+
+                isConfirmed = true;
             }
 
             data.SaveChanges();
+
+            return isConfirmed;
+ 
         }
 
         public string Create(int showId, IEnumerable<Reservation> reservations, string userId)
@@ -171,7 +179,7 @@ namespace TheatreWebApp.Services.Tickets
                     StageName = t.Show.Stage.Name,
                     Time = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.Show.Time),
                     SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
-                    TotalPrice = t.Reservations.Select(r => r.Price).Sum()
+                    TotalPrice = (decimal)t.Reservations.Select(r => r.Price).Sum()
                 })
                 .FirstOrDefault();
 
