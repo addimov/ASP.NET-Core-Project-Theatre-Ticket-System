@@ -113,13 +113,6 @@ namespace TheatreWebApp.Services.Plays
             return play;
         }
 
-        private static IEnumerable<string> SplitIntoParagraphs(string text)
-        {
-            var splittedText = text.Split('\n').ToList();
-
-            return splittedText;
-        }
-
         public void ChangeVisibility(int playId)
         {
             var play = data.Plays
@@ -191,5 +184,13 @@ namespace TheatreWebApp.Services.Plays
 
             return plays;
         }
+
+        private static IEnumerable<string> SplitIntoParagraphs(string text)
+        {
+            var splittedText = text.Split('\n').ToList();
+
+            return splittedText;
+        }
+
     }
 }

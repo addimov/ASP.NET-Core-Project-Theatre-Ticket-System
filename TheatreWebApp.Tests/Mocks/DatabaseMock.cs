@@ -57,7 +57,7 @@ namespace TheatreWebApp.Tests.Mocks
                 Id = 4,
                 Name = "Play Four",
                 ShortDescription = "Short Text",
-                Description = "Long Text",
+                Description = "Long Text\n Text Text",
                 Credits = "Credits",
                 ImageUrl = "Url",
                 IsHidden = false
