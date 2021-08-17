@@ -41,7 +41,8 @@ namespace TheatreWebApp
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<TheatreDbContext>();
 
-            services.AddControllersWithViews(options => options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>());
+            services.AddControllersWithViews(options => 
+                options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>());
 
             services.Configure<IdentityOptions>(options =>
             {

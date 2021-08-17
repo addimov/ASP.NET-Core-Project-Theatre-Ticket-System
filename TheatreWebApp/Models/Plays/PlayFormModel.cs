@@ -14,8 +14,10 @@ namespace TheatreWebApp.Models.Plays
 
         [Required]
         [StringLength(250)]
+        [Display(Name = "Basic information")]
         public string ShortDescription { get; set; }
 
+        [MaxLength(250)]
         public string Credits { get; set; }
 
         [Url]
