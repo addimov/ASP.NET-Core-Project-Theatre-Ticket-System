@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Infrastructure;
+using TheatreWebApp.Services.Background;
 using TheatreWebApp.Services.Categories;
 using TheatreWebApp.Services.Plays;
 using TheatreWebApp.Services.Seats;

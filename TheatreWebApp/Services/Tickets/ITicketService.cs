@@ -7,7 +7,7 @@ namespace TheatreWebApp.Services.Tickets
 {
     public interface ITicketService
     {
-        IEnumerable<TicketServiceModel> AllByUser(
+        TicketQueryModel AllByUser(
             string userId, 
             int currentPage = 1, 
             int ticketsPerPage = int.MaxValue,

@@ -19,7 +19,7 @@ namespace TheatreWebApp.Services.Tickets
             this.data = data;
         }
 
-        public IEnumerable<TicketServiceModel> AllByUser(
+        public TicketQueryModel AllByUser(
             string userId, 
             int currentPage = 1, 
             int ticketsPerPage = int.MaxValue,
@@ -29,6 +29,8 @@ namespace TheatreWebApp.Services.Tickets
                 .Where(t => t.UserId == userId)
                 .OrderBy(t => t.Show.Time)
                 .AsQueryable();
+
+            var totalTickets = ticketsQuery.Count();
 
             ticketsQuery = ticketsQuery 
                 .Skip((currentPage - 1) * ticketsPerPage)
@@ -49,7 +51,15 @@ namespace TheatreWebApp.Services.Tickets
                 })
                 .ToList();
 
-            return tickets;
+            var model = new TicketQueryModel
+            {
+                Tickets = tickets,
+                CurrentPage = currentPage,
+                TotalTickets = totalTickets,
+                ShowAll = showAll
+            };
+
+            return model;
         }
 
         public bool Authorize(string userId, string ticketId)

@@ -33,6 +33,8 @@
 
         var seats = string.Join(", ", ticket.SeatNumbers);
 
+        var shouldBeRed = ticket.Status == "Unconfirmed";
+
 
 
         <div class="card w-100 mb-4">
@@ -40,12 +42,13 @@
                 <h5 class="card-title">@ticket.PlayName</h5>
                 <h6 class="card-subtitle mb-2 text-muted">@ticket.StageName</h6>
                 <p class="card-text">@ticket.Time -- Seats: @seats -- Price: @ticket.TotalPrice</p>
-                <p>Reservations Status: @ticket.Status</p>
+                <p style=@(shouldBeRed ? "color:red" : "color:green")>Reservations Status: @ticket.Status</p>
                 <p>Created on: @ticket.CreatedOn</p>
                 @if (ticket.Status == "Unconfirmed")
                 {
-                    <a href="#" class="card-link">Cancel</a>
-                    <a href="#" class="card-link">Confirm and pay</a>
+                    <a asp-controller="Tickets" asp-action="Cancel" asp-route-ticketId="@ticket.TicketId" class="card-link">Cancel</a>
+                    <a asp-controller="Tickets" asp-action="Pay" asp-route-ticketId="@ticket.TicketId" class="card-link">Confirm and pay</a>
+                    <div>Reservation will expire soon.</div>
                 }
                 else if (ticket.Status == "Paid")
                 {

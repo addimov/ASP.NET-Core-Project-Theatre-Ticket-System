@@ -29,13 +29,9 @@ namespace TheatreWebApp.Controllers
         public IActionResult All([FromQuery]TicketQueryModel query)
         {
             var tickets = this.tickets
-                .AllByUser(this.User.Id(), query.CurrentPage, TicketQueryModel.TicketsPerPage, query.ShowAll)
-                .ToList();
-
-            query.Tickets = tickets;
-            query.TotalTickets = tickets.Count();
-
-            return View(query);
+                .AllByUser(this.User.Id(), query.CurrentPage, TicketQueryModel.TicketsPerPage, query.ShowAll);
+                
+            return View(tickets);
         }
 
         [Authorize]
@@ -109,6 +105,22 @@ namespace TheatreWebApp.Controllers
             var order = this.tickets.ToPrint(ticketId);
 
             return View(order);
+        }
+
+        [Authorize]
+        public IActionResult Cancel(string ticketId)
+        {
+            this.tickets.Confirm(ticketId, 1);
+
+            return RedirectToAction("All");
+        }
+
+        [Authorize]
+        public IActionResult Pay(string ticketId)
+        {
+            this.tickets.Confirm(ticketId, 2);
+
+            return RedirectToAction("All");
         }
 
     }
