@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 
+using static TheatreWebApp.Data.DataConstants;
+
 namespace TheatreWebApp.Infrastructure
 {
     public static class ApplicationBuilderExtensions
@@ -147,10 +149,8 @@ namespace TheatreWebApp.Infrastructure
 
             data.ReservationStatuses.AddRange(new[]
             {
-                new ReservationStatus{ Name = "Confirmed" },
-                new ReservationStatus { Name = "Paid" },
-                new ReservationStatus { Name = "Expired" },
-                new ReservationStatus { Name = "Unconfirmed" },
+                new ReservationStatus { Name = Statuses.Paid },
+                new ReservationStatus { Name = Statuses.Unconfirmed },
             });
 
             data.SaveChanges();

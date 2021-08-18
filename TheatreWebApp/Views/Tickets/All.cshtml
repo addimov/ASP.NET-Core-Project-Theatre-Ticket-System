@@ -1,4 +1,5 @@
 ﻿@using TheatreWebApp.Models.Tickets
+@using static TheatreWebApp.Data.DataConstants;
 
 @model TicketQueryModel
 
@@ -44,13 +45,13 @@
                 <p class="card-text">@ticket.Time -- Seats: @seats -- Price: @ticket.TotalPrice.ToString("0.00")</p>
                 <p style=@(shouldBeRed ? "color:red" : "color:green")>Reservations Status: @ticket.Status</p>
                 <p>Created on: @ticket.CreatedOn</p>
-                @if (ticket.Status == "Unconfirmed")
+                @if (ticket.Status == Statuses.Unconfirmed)
                 {
                     <a asp-controller="Tickets" asp-action="Cancel" asp-route-ticketId="@ticket.TicketId" class="card-link">Cancel</a>
                     <a asp-controller="Tickets" asp-action="Pay" asp-route-ticketId="@ticket.TicketId" class="card-link">Confirm and pay</a>
                     <div>Reservation will expire soon.</div>
                 }
-                else if (ticket.Status == "Paid")
+                else if (ticket.Status == Statuses.Paid)
                 {
                     <a asp-controller="Tickets" asp-action="Print" asp-route-ticketId="@ticket.TicketId">Print tickets</a>
                 }

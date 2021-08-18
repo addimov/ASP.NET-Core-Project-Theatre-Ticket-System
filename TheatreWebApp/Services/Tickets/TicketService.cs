@@ -7,6 +7,7 @@ using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Tickets.Model;
 
 using static TheatreWebApp.WebConstants;
+using static TheatreWebApp.Data.DataConstants;
 
 namespace TheatreWebApp.Services.Tickets
 {
@@ -93,7 +94,7 @@ namespace TheatreWebApp.Services.Tickets
             }
             if (action == 2)
             {               
-                ticket.ReservationStatusId = data.ReservationStatuses.Where(r => r.Name == "Paid").Select(r => r.Id).FirstOrDefault();
+                ticket.ReservationStatusId = data.ReservationStatuses.Where(r => r.Name == Statuses.Paid).Select(r => r.Id).FirstOrDefault();
 
                 data.Tickets.Update(ticket);
 
@@ -111,7 +112,7 @@ namespace TheatreWebApp.Services.Tickets
             var ticket = new Ticket
             {
                 ShowId = showId,
-                ReservationStatusId = data.ReservationStatuses.Where(s => s.Name == "Unconfirmed").Select(s => s.Id).FirstOrDefault(),
+                ReservationStatusId = data.ReservationStatuses.Where(s => s.Name == Statuses.Unconfirmed).Select(s => s.Id).FirstOrDefault(),
                 UserId = userId
             };
 
