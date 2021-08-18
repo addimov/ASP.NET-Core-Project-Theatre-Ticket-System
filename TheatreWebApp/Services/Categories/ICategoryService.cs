@@ -1,4 +1,5 @@
 ﻿using TheatreWebApp.Models.Seats;
+using TheatreWebApp.Services.Categories.Models;
 
 namespace TheatreWebApp.Services.Categories
 {

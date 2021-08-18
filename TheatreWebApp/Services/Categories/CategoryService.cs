@@ -3,6 +3,7 @@ using System.Linq;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Models.Seats;
+using TheatreWebApp.Services.Categories.Models;
 
 namespace TheatreWebApp.Services.Categories
 {
@@ -60,8 +61,17 @@ namespace TheatreWebApp.Services.Categories
 
         public CategoryFormModel GetFormModel(CategoryServiceModel viewData)
         {
-            var categories = new List<SeatCategoryViewModel>();
+            var selectedCategories = new List<SeatCategoryViewModel>();
 
+            var allCategories = data.SeatCategories
+                .OrderBy(c => c.Id)
+                .Select(c => new CategoryViewModel
+                {
+                    Name = c.Name,
+                    Price = c.Price
+                })
+                .ToList();
+            
             foreach (var category in viewData.CategoryIds)
             {
                 var seatsInCategory = viewData.Seats
@@ -83,13 +93,14 @@ namespace TheatreWebApp.Services.Categories
                     })
                     .FirstOrDefault();
 
-                categories.Add(categoryModel);
+                selectedCategories.Add(categoryModel);
             }
 
             var categoryForm = new CategoryFormModel
             {
                 SelectedSeats = viewData.SelectedSeats,
-                SeatsCategories = categories
+                SeatsCategories = selectedCategories,
+                AllCategories = allCategories
             };
 
             return categoryForm;

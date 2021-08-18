@@ -14,7 +14,7 @@ namespace TheatreWebApp.Models.Plays
 
         [Required]
         [StringLength(250)]
-        [Display(Name = "Basic information")]
+        [Display(Name = "General information")]
         public string ShortDescription { get; set; }
 
         [MaxLength(250)]

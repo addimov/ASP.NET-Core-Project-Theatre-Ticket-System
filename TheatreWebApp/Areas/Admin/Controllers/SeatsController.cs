@@ -51,6 +51,10 @@ namespace TheatreWebApp.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Edit(CategoryFormModel categoryInput)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
 
             this.category.EditCategory(categoryInput);
 

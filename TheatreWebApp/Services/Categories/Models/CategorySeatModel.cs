@@ -1,4 +1,4 @@
-﻿namespace TheatreWebApp.Services.Categories
+﻿namespace TheatreWebApp.Services.Categories.Models
 {
     public class CategorySeatModel
     {
