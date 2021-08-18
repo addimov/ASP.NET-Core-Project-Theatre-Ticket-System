@@ -18,7 +18,7 @@
                 <h6 class="card-subtitle mb-2 text-muted">@ticket.StageName</h6>
                 <p class="card-text">@ticket.Time</p>
                 <p class="card-text">Seat: @ticket.SeatNumber -- Row: @ticket.Row</p>
-                <p class="card-text">Price: @ticket.Price</p>
+                <p class="card-text">Price: @ticket.Price.ToString("0.00")</p>
                 <p class="card-text">@(ticket.TicketId + "_" + idCount++)</p>
             </div>
         </div>

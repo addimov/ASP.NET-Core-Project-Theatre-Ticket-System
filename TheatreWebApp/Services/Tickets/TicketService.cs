@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using TheatreWebApp.Data;
 using TheatreWebApp.Data.Models;
 using TheatreWebApp.Models.Tickets;
 using TheatreWebApp.Services.Tickets.Model;
+
+using static TheatreWebApp.WebConstants;
 
 namespace TheatreWebApp.Services.Tickets
 {
@@ -47,7 +47,7 @@ namespace TheatreWebApp.Services.Tickets
                     Status = t.ReservationStatus.Name,
                     TotalPrice = t.Reservations.Select(r => r.Price).Sum(),
                     SeatNumbers = t.Reservations.Select(r => r.Seat).Select(s => s.Number).ToList(),
-                    CreatedOn = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.CreatedOn)
+                    CreatedOn = string.Format(CultureInfo.InvariantCulture, "{0:f}", t.CreatedOn.AddHours(TimeDifference))
                 })
                 .ToList();
 

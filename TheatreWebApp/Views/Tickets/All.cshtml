@@ -41,7 +41,7 @@
             <div class="card-body">
                 <h5 class="card-title">@ticket.PlayName</h5>
                 <h6 class="card-subtitle mb-2 text-muted">@ticket.StageName</h6>
-                <p class="card-text">@ticket.Time -- Seats: @seats -- Price: @ticket.TotalPrice</p>
+                <p class="card-text">@ticket.Time -- Seats: @seats -- Price: @ticket.TotalPrice.ToString("0.00")</p>
                 <p style=@(shouldBeRed ? "color:red" : "color:green")>Reservations Status: @ticket.Status</p>
                 <p>Created on: @ticket.CreatedOn</p>
                 @if (ticket.Status == "Unconfirmed")
